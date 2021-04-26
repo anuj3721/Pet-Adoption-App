@@ -4,6 +4,24 @@ import 'dart:math';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
 class PetCardNew extends StatelessWidget {
+  String petId;
+  String petName = '';
+  String breed = '';
+  String age = '';
+  String distance = '';
+  String gender = '';
+  String imagePath = '';
+
+  PetCardNew({
+    this.petId,
+    this.petName,
+    this.breed,
+    this.age,
+    this.distance,
+    this.gender,
+    this.imagePath,
+  });
+
   final colors = [
     Colors.blueGrey[200],
     Colors.green[200],
@@ -32,18 +50,65 @@ class PetCardNew extends StatelessWidget {
                   const EdgeInsets.symmetric(horizontal: 15.0, vertical: 10.0),
               child: Material(
                 elevation: 10.0,
-                child: Image.asset('images/dog0.png'),
+                child: Image.asset(imagePath),
               ),
             ),
           ),
           Expanded(
             flex: 1,
             child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
+              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+              crossAxisAlignment: CrossAxisAlignment.stretch,
               children: [
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Text(
+                      petName,
+                      textAlign: TextAlign.left,
+                      style: TextStyle(
+                        color: Colors.white,
+                        fontWeight: FontWeight.bold,
+                        fontSize: 20.0,
+                      ),
+                    ),
+                    Icon(
+                      gender == 'male'
+                          ? FontAwesomeIcons.mars
+                          : FontAwesomeIcons.venus,
+                      color: Colors.white,
+                    ),
+                    SizedBox(
+                      width: 10.0,
+                    ),
+                  ],
+                ),
                 Text(
-                  'This is Bruno',
-                  style: TextStyle(color: Colors.white),
+                  breed,
+                  textAlign: TextAlign.left,
+                  style: TextStyle(
+                    color: Colors.white,
+                  ),
+                ),
+                Text(
+                  age + " Years",
+                  textAlign: TextAlign.left,
+                  style: TextStyle(
+                    color: Colors.white,
+                  ),
+                ),
+                Row(
+                  children: [
+                    Icon(
+                      Icons.location_pin,
+                      size: 15.0,
+                      color: Colors.white,
+                    ),
+                    Text(
+                      'Distance: ' + distance + ' Km',
+                      style: TextStyle(color: Colors.white),
+                    )
+                  ],
                 ),
               ],
             ),

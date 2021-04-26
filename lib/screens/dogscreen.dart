@@ -57,7 +57,30 @@ class _DogScreenState extends State<DogScreen> {
                 child: SingleChildScrollView(
                   child: Column(
                     children: <Widget>[
-                      PetCardNew(),
+                      PetCardNew(
+                        imagePath: 'images/dog0.png',
+                        petName: 'Bruno',
+                        breed: 'German Shepherd',
+                        age: '7',
+                        distance: '5',
+                        gender: 'male',
+                      ),
+                      PetCardNew(
+                        imagePath: 'images/sampleDog.jpg',
+                        petName: 'Bruno',
+                        breed: 'German Shepherd',
+                        age: '7',
+                        distance: '5',
+                        gender: 'male',
+                      ),
+                      PetCardNew(
+                        imagePath: 'images/dog0.png',
+                        petName: 'Bruno',
+                        breed: 'German Shepherd',
+                        age: '7',
+                        distance: '5',
+                        gender: 'male',
+                      ),
                     ],
                   ),
                 ),
