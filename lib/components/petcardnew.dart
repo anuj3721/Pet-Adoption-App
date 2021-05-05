@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'dart:math';
-
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
 class PetCardNew extends StatelessWidget {
@@ -88,6 +87,7 @@ class PetCardNew extends StatelessWidget {
                   textAlign: TextAlign.left,
                   style: TextStyle(
                     color: Colors.white,
+                    fontSize: 16.0,
                   ),
                 ),
                 Text(
@@ -95,18 +95,20 @@ class PetCardNew extends StatelessWidget {
                   textAlign: TextAlign.left,
                   style: TextStyle(
                     color: Colors.white,
+                    fontSize: 16.0,
                   ),
                 ),
                 Row(
                   children: [
                     Icon(
                       Icons.location_pin,
-                      size: 15.0,
+                      size: 16.0,
                       color: Colors.white,
                     ),
                     Text(
-                      'Distance: ' + distance + ' Km',
-                      style: TextStyle(color: Colors.white),
+                      ' Distance: ' + distance + ' Km',
+                      style: TextStyle(color: Colors.white,
+                        fontSize: 16.0,),
                     )
                   ],
                 ),

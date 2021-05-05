@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:pet_adoption_app/components/petcard.dart';
+//import 'package:pet_adoption_app/components/petcard.dart';
 import 'package:pet_adoption_app/components/petcardnew.dart';
+import 'package:pet_adoption_app/screens/dogDescriptionScreen.dart';
 
 class DogScreen extends StatefulWidget {
   @override
@@ -29,11 +30,21 @@ class _DogScreenState extends State<DogScreen> {
                       _scaffoldKey.currentState.openDrawer();
                     },
                   ),
-                  Text(
-                    'Location\nDelhi, India',
+                  Column(
+                    children: [
+                      Text(
+                        'Location',
+                      ),
+                      Text(
+                        'Delhi, India',
+                        style: TextStyle(
+                          fontWeight: FontWeight.w500,
+                        ),
+                      )
+                    ],
                   ),
                   CircleAvatar(
-                    backgroundColor: Colors.teal,
+                    child: Image.asset('images/unknown_account.jpg'),
                   ),
                 ],
               ),
@@ -57,27 +68,37 @@ class _DogScreenState extends State<DogScreen> {
                 child: SingleChildScrollView(
                   child: Column(
                     children: <Widget>[
+                      GestureDetector(
+                        child: PetCardNew(
+                          imagePath: 'images/dog0.png',
+                          petName: 'Bruno',
+                          breed: 'German Shepherd',
+                          age: '4',
+                          distance: '5',
+                          gender: 'male',
+                        ),
+                        onTap: () {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) => DogDescriptionScreen(),
+                            ),
+                          );
+                        },
+                      ),
                       PetCardNew(
-                        imagePath: 'images/dog0.png',
+                        imagePath: 'images/dog4.png',
                         petName: 'Bruno',
                         breed: 'German Shepherd',
-                        age: '7',
+                        age: '5',
                         distance: '5',
                         gender: 'male',
                       ),
                       PetCardNew(
-                        imagePath: 'images/sampleDog.jpg',
+                        imagePath: 'images/dog2.png',
                         petName: 'Bruno',
                         breed: 'German Shepherd',
-                        age: '7',
-                        distance: '5',
-                        gender: 'male',
-                      ),
-                      PetCardNew(
-                        imagePath: 'images/dog0.png',
-                        petName: 'Bruno',
-                        breed: 'German Shepherd',
-                        age: '7',
+                        age: '4',
                         distance: '5',
                         gender: 'male',
                       ),
