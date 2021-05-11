@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
-//import 'package:pet_adoption_app/components/petcard.dart';
 import 'package:pet_adoption_app/components/petcardnew.dart';
-import 'package:pet_adoption_app/screens/dogDescriptionScreen.dart';
+import 'package:pet_adoption_app/screens/descriptionScreen.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 
 class DogScreen extends StatefulWidget {
   @override
@@ -10,12 +10,30 @@ class DogScreen extends StatefulWidget {
 
 class _DogScreenState extends State<DogScreen> {
   final GlobalKey<ScaffoldState> _scaffoldKey = new GlobalKey<ScaffoldState>();
+  FirebaseAuth _auth;
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    _auth = FirebaseAuth.instance;
+  }
 
   @override
   Widget build(BuildContext context) {
     return SafeArea(
       child: new Scaffold(
-        drawer: Drawer(),
+        drawer: Drawer(
+          child: ListTile(
+            title: Text('LOGOUT'),
+            onTap: () {
+              if (_auth.currentUser != null) {
+                _auth.signOut();
+                Navigator.pop(context);
+              }
+            },
+          ),
+        ),
         key: _scaffoldKey,
         body: Column(
           children: [
@@ -81,7 +99,7 @@ class _DogScreenState extends State<DogScreen> {
                           Navigator.push(
                             context,
                             MaterialPageRoute(
-                              builder: (context) => DogDescriptionScreen(),
+                              builder: (context) => DescriptionScreen(),
                             ),
                           );
                         },

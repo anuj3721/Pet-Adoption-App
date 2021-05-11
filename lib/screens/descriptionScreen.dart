@@ -2,12 +2,12 @@ import 'package:flutter/material.dart';
 import 'package:carousel_slider/carousel_slider.dart';
 
 final List<String> imgList = [
-  'images/dog0.png',
-  'images/dog4.png',
-  'images/dog2.png',
+  'images/sampleDog.jpg',
+  'images/sampleDog.jpg',
+  'images/sampleDog.jpg',
 ];
 
-class DogDescriptionScreen extends StatelessWidget {
+class DescriptionScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -22,24 +22,32 @@ class DogDescriptionScreen extends StatelessWidget {
                 children: [
                   Container(
                     alignment: Alignment.center,
-                    color: Colors.green[200],
+                    // color: Colors.green[200],
                     child: CarouselSlider(
                       options: CarouselOptions(),
-                      items: imgList.map((item) => Container(
-                        child: Center(
-                          child: Image.asset(item, fit: BoxFit.cover),
-                        ),
-                      )).toList(),
-                    )
+                      items: imgList
+                          .map(
+                            (item) => Container(
+                              child: Center(
+                                child: Image.asset(item, fit: BoxFit.cover),
+                              ),
+                            ),
+                          )
+                          .toList(),
+                    ),
                   ),
                   Positioned(
-                    top: 15, left: 15,
+                    top: 15,
+                    left: 15,
                     child: GestureDetector(
-                      onTap: (){
+                      onTap: () {
                         Navigator.pop(context);
                       },
-                      child: Icon(Icons.arrow_back,color: Colors.white,
-                      size: 20,),
+                      child: Icon(
+                        Icons.arrow_back,
+                        color: Colors.white,
+                        size: 20,
+                      ),
                     ),
                   ),
                 ],
@@ -92,21 +100,6 @@ class DogDescriptionScreen extends StatelessWidget {
                         ),
                       ),
                     ),
-                    // FlatButton(
-                    //   onPressed: () {},
-                    //   child: Container(
-                    //     height: 30.0,
-                    //     width: 70.0,
-                    //     child: Text(
-                    //       'Contact',
-                    //       textAlign: TextAlign.center,
-                    //       style: TextStyle(
-                    //         color: Colors.white,
-                    //       ),
-                    //     ),
-                    //     color: Colors.green,
-                    //   ),
-                    // ),
                   ],
                 ),
               ),
@@ -118,42 +111,47 @@ class DogDescriptionScreen extends StatelessWidget {
   }
 }
 
-final List<Widget> imageSliders = imgList.map((item) => Container(
-  child: Container(
-    margin: EdgeInsets.all(5.0),
-    child: ClipRRect(
-        borderRadius: BorderRadius.all(Radius.circular(5.0)),
-        child: Stack(
-          children: <Widget>[
-            Image.asset(item, fit: BoxFit.cover),
-            Positioned(
-              bottom: 0.0,
-              left: 0.0,
-              right: 0.0,
-              child: Container(
-                decoration: BoxDecoration(
-                  gradient: LinearGradient(
-                    colors: [
-                      Color.fromARGB(200, 0, 0, 0),
-                      Color.fromARGB(0, 0, 0, 0)
-                    ],
-                    begin: Alignment.bottomCenter,
-                    end: Alignment.topCenter,
+final List<Widget> imageSliders = imgList
+    .map(
+      (item) => Container(
+        child: Container(
+          margin: EdgeInsets.all(5.0),
+          child: ClipRRect(
+            borderRadius: BorderRadius.all(Radius.circular(5.0)),
+            child: Stack(
+              children: <Widget>[
+                Image.asset(item, fit: BoxFit.cover),
+                Positioned(
+                  bottom: 0.0,
+                  left: 0.0,
+                  right: 0.0,
+                  child: Container(
+                    decoration: BoxDecoration(
+                      gradient: LinearGradient(
+                        colors: [
+                          Color.fromARGB(200, 0, 0, 0),
+                          Color.fromARGB(0, 0, 0, 0)
+                        ],
+                        begin: Alignment.bottomCenter,
+                        end: Alignment.topCenter,
+                      ),
+                    ),
+                    padding:
+                        EdgeInsets.symmetric(vertical: 10.0, horizontal: 20.0),
+                    child: Text(
+                      'No. ${imgList.indexOf(item)} image',
+                      style: TextStyle(
+                        color: Colors.white,
+                        fontSize: 20.0,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
                   ),
                 ),
-                padding: EdgeInsets.symmetric(vertical: 10.0, horizontal: 20.0),
-                child: Text(
-                  'No. ${imgList.indexOf(item)} image',
-                  style: TextStyle(
-                    color: Colors.white,
-                    fontSize: 20.0,
-                    fontWeight: FontWeight.bold,
-                  ),
-                ),
-              ),
+              ],
             ),
-          ],
-        )
-    ),
-  ),
-)).toList();
+          ),
+        ),
+      ),
+    )
+    .toList();

@@ -4,6 +4,7 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:pet_adoption_app/screens/catscreen.dart';
 import 'package:pet_adoption_app/screens/dogscreen.dart';
 import 'package:pet_adoption_app/screens/postscreen.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 
 class HomePage extends StatefulWidget {
   @override
@@ -11,6 +12,7 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
+  FirebaseAuth _auth;
   int _currentIndex = 0;
   PageController _pageController;
 
@@ -18,6 +20,7 @@ class _HomePageState extends State<HomePage> {
   void initState() {
     super.initState();
     _pageController = PageController();
+    _auth = FirebaseAuth.instance;
   }
 
   @override
