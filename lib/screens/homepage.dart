@@ -12,6 +12,7 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
+  User loggedInUser;
   FirebaseAuth _auth;
   int _currentIndex = 0;
   PageController _pageController;

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:pet_adoption_app/screens/homepage.dart';
 import 'package:pet_adoption_app/screens/registration.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 
@@ -9,6 +10,15 @@ class LoginOrRegister extends StatefulWidget {
 
 class _LoginOrRegisterState extends State<LoginOrRegister> {
   FirebaseAuth _auth;
+  String email;
+  String password;
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    _auth = FirebaseAuth.instance;
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -20,6 +30,10 @@ class _LoginOrRegisterState extends State<LoginOrRegister> {
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
             TextField(
+              onChanged: (value) {
+                email = value;
+                print(email);
+              },
               keyboardType: TextInputType.emailAddress,
               decoration: InputDecoration(
                 hintText: 'Enter your email',
@@ -32,6 +46,10 @@ class _LoginOrRegisterState extends State<LoginOrRegister> {
               height: 10.0,
             ),
             TextField(
+              onChanged: (value) {
+                password = value;
+                print(password);
+              },
               obscureText: true,
               decoration: InputDecoration(
                 hintText: 'Enter your password',
@@ -45,7 +63,18 @@ class _LoginOrRegisterState extends State<LoginOrRegister> {
             ),
             MaterialButton(
               height: 50.0,
-              onPressed: () {},
+              onPressed: () {
+                try {
+                  var user = _auth.signInWithEmailAndPassword(
+                      email: email, password: password);
+                  if (user != null) {
+                    Navigator.push(context,
+                        MaterialPageRoute(builder: (context) => HomePage()));
+                  }
+                } catch (e) {
+                  print(e);
+                }
+              },
               child: Text(
                 'LOGIN',
                 style: TextStyle(color: Colors.white),

@@ -18,8 +18,6 @@ class _PostScreenState extends State<PostScreen> {
         Navigator.push(context,
             MaterialPageRoute(builder: (context) => LoginOrRegister()));
       });
-    } else {
-      print(FirebaseAuth.instance.currentUser.email);
     }
   }
 

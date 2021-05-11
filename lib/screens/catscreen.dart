@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:pet_adoption_app/components/petcard.dart';
+import 'package:pet_adoption_app/components/petcardnew.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:pet_adoption_app/screens/descriptionScreen.dart';
 
 class CatScreen extends StatefulWidget {
   @override
@@ -8,12 +10,30 @@ class CatScreen extends StatefulWidget {
 
 class _CatScreenState extends State<CatScreen> {
   final GlobalKey<ScaffoldState> _scaffoldKey = new GlobalKey<ScaffoldState>();
+  FirebaseAuth _auth;
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    _auth = FirebaseAuth.instance;
+  }
 
   @override
   Widget build(BuildContext context) {
     return SafeArea(
       child: new Scaffold(
-        drawer: Drawer(),
+        drawer: Drawer(
+          child: ListTile(
+            title: Text('LOGOUT'),
+            onTap: () {
+              if (_auth.currentUser != null) {
+                _auth.signOut();
+                Navigator.pop(context);
+              }
+            },
+          ),
+        ),
         key: _scaffoldKey,
         body: Column(
           children: [
@@ -28,11 +48,21 @@ class _CatScreenState extends State<CatScreen> {
                       _scaffoldKey.currentState.openDrawer();
                     },
                   ),
-                  Text(
-                    'Location\nDelhi, India',
+                  Column(
+                    children: [
+                      Text(
+                        'Location',
+                      ),
+                      Text(
+                        'Delhi, India',
+                        style: TextStyle(
+                          fontWeight: FontWeight.w500,
+                        ),
+                      )
+                    ],
                   ),
                   CircleAvatar(
-                    backgroundColor: Colors.teal,
+                    child: Image.asset('images/unknown_account.jpg'),
                   ),
                 ],
               ),
@@ -56,14 +86,39 @@ class _CatScreenState extends State<CatScreen> {
                 child: SingleChildScrollView(
                   child: Column(
                     children: <Widget>[
-                      PetCard(
-                        imagePath: 'images/dog0.png',
+                      GestureDetector(
+                        child: PetCardNew(
+                          imagePath: 'images/dog0.png',
+                          petName: 'Bruno',
+                          breed: 'German Shepherd',
+                          age: '4',
+                          distance: '5',
+                          gender: 'male',
+                        ),
+                        onTap: () {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) => DescriptionScreen(),
+                            ),
+                          );
+                        },
                       ),
-                      PetCard(
-                        imagePath: 'images/sampleDog.jpg',
+                      PetCardNew(
+                        imagePath: 'images/dog4.png',
+                        petName: 'Bruno',
+                        breed: 'German Shepherd',
+                        age: '5',
+                        distance: '5',
+                        gender: 'male',
                       ),
-                      PetCard(
-                        imagePath: 'images/sampleDog.jpg',
+                      PetCardNew(
+                        imagePath: 'images/dog2.png',
+                        petName: 'Bruno',
+                        breed: 'German Shepherd',
+                        age: '4',
+                        distance: '5',
+                        gender: 'male',
                       ),
                     ],
                   ),
