@@ -24,11 +24,12 @@ class _PostScreenState extends State<PostScreen> {
   FirebaseAuth _auth;
   final _formKey = GlobalKey<FormState>();
   @override
-
   void initState() {
     // TODO: implement initState
     super.initState();
-    if (FirebaseAuth.instance.currentUser == null) {
+    _auth = FirebaseAuth.instance;
+    _reference = FirebaseFirestore.instance.collection('Pet Data');
+    if (_auth.currentUser == null) {
       Timer.run(() {
         Navigator.push(context,
             MaterialPageRoute(builder: (context) => LoginOrRegister()));
@@ -185,6 +186,9 @@ class _PostScreenState extends State<PostScreen> {
                         if (value == null || value.isEmpty) {
                           return 'Please enter some text';
                         }
+                        if ( value.length != 10) {
+                            return 'Enter 10 digit phone number';
+                          }
                         return null;
                       },
                     ),
@@ -212,8 +216,9 @@ class _PostScreenState extends State<PostScreen> {
                         if (_formKey.currentState.validate()) {
                           // If the form is valid, display a snackbar. In the real world,
                           // you'd often call a server or save the information in a database.
-                          // ScaffoldMessenger.of(context).showSnackBar(
-                          //     SnackBar(content: Text('Processing Data')));
+                          Scaffold.of(context).showSnackBar(
+                              SnackBar(content: Text('Processing',
+                              textAlign: TextAlign.center,)));
                           _reference.add({
                             'Address': _address,
                             'Breed': _breed,
