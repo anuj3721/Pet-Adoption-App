@@ -108,26 +108,16 @@ class _LoginOrRegisterState extends State<LoginOrRegister> {
                     onPressed: () async {
                       try {
                         if (_formKey.currentState.validate()) {
-                          // If the form is valid, display a snackbar. In the real world,
-                          // you'd often call a server or save the information in a database.
                           print(email);
                           print(password);
                           var user = await _auth.signInWithEmailAndPassword(
                               email: email, password: password);
-                          // if (user != null) {
-                          //   check = true;
-                          //   Navigator.push(
-                          //       context,
-                          //       MaterialPageRoute(
-                          //           builder: (context) => HomePage()));
-                          // }
                         }
-                      }
-                      on FirebaseAuthException catch (e) {
-                        if( e.code == 'user-not-found' || e.code == 'wrong-password') {
+                      } on FirebaseAuthException catch (e) {
+                        if (e.code == 'user-not-found' ||
+                            e.code == 'wrong-password') {
                           _errorMessage = 'Invalid email or password';
-                          }
-                        else {
+                        } else {
                           _errorMessage = e.message;
                         }
                       }
@@ -135,14 +125,15 @@ class _LoginOrRegisterState extends State<LoginOrRegister> {
                         print(_errorMessage);
                         ScaffoldMessenger.of(context).showSnackBar(
                           SnackBar(
-                            content: Text(_errorMessage,textAlign: TextAlign.center),
+                            content: Text(_errorMessage,
+                                textAlign: TextAlign.center),
                             backgroundColor: Theme.of(context).errorColor,
                           ),
                         );
                         setState(() {
                           _errorMessage = null;
                         });
-                      } else {
+                      } else if (_formKey.currentState.validate()) {
                         Navigator.push(
                             context,
                             MaterialPageRoute(

@@ -166,7 +166,7 @@ class _RegistrationPageState extends State<RegistrationPage> {
                         errorMessage = null;
                       });
                     }
-                    else {
+                    else if (_formKey.currentState.validate()){
                       _reference.add({
                         'Name': name,
                         'Email': email,
