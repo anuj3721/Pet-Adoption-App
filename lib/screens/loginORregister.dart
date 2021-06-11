@@ -64,7 +64,7 @@ class _LoginOrRegisterState extends State<LoginOrRegister> {
                   ),
                 ),
                 SizedBox(
-                  height: 10.0,
+                  height: 15.0,
                 ),
                 Flexible(
                   child: TextFormField(
@@ -105,14 +105,14 @@ class _LoginOrRegisterState extends State<LoginOrRegister> {
                 Flexible(
                   child: MaterialButton(
                     height: 50.0,
-                    onPressed: () {
+                    onPressed: () async {
                       try {
                         if (_formKey.currentState.validate()) {
                           // If the form is valid, display a snackbar. In the real world,
                           // you'd often call a server or save the information in a database.
                           print(email);
                           print(password);
-                          var user = _auth.signInWithEmailAndPassword(
+                          var user = await _auth.signInWithEmailAndPassword(
                               email: email, password: password);
                           // if (user != null) {
                           //   check = true;
@@ -122,20 +122,27 @@ class _LoginOrRegisterState extends State<LoginOrRegister> {
                           //           builder: (context) => HomePage()));
                           // }
                         }
-                      } on FirebaseAuthException catch (e) {
-                        if( e.code == '' || e.code == '') {
-                            setState(() {
-                              _errorMessage = 'Invalid email or password';
-                            });
+                      }
+                      on FirebaseAuthException catch (e) {
+                        if( e.code == 'user-not-found' || e.code == 'wrong-password') {
+                          _errorMessage = 'Invalid email or password';
                           }
+                        else {
+                          _errorMessage = e.message;
+                        }
                       }
                       if (_errorMessage != null) {
                         print(_errorMessage);
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          SnackBar(
+                            content: Text(_errorMessage,textAlign: TextAlign.center),
+                            backgroundColor: Theme.of(context).errorColor,
+                          ),
+                        );
                         setState(() {
                           _errorMessage = null;
                         });
-                      }
-                      else {
+                      } else {
                         Navigator.push(
                             context,
                             MaterialPageRoute(

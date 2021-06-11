@@ -138,10 +138,6 @@ class _RegistrationPageState extends State<RegistrationPage> {
                       if (_formKey.currentState.validate()) {
                         var user = await _auth.createUserWithEmailAndPassword(
                             email: email, password: password);
-                          _reference.add({
-                            'Name': name,
-                            'Email': email,
-                          });
                           // Navigator.push(
                           //     context,
                           //     MaterialPageRoute(builder: (context) => HomePage()));
@@ -149,31 +145,32 @@ class _RegistrationPageState extends State<RegistrationPage> {
                     } on FirebaseAuthException catch (error) {
                       switch (error.code) {
                         case 'weak-password':
-                          setState(() {
                             errorMessage = "The password provided is too weak";
-                          });
                           break;
                         case "email-already-in-use":
-                          setState(() {
                             errorMessage = "Email is already in use";
-                          });
                           break;
+                        default:
+                          errorMessage = error.message;
                       }
                     }
                     if (errorMessage != null) {
-                      // ----------------
-                    // Scaffold.of(context).showSnackBar(
-                    //     SnackBar(
-                    //       content: Text(errorMessage),
-                    //       backgroundColor: Theme.of(context).errorColor,
-                    //     ),
-                    //  );
+                    ScaffoldMessenger.of(context).showSnackBar(
+                        SnackBar(
+                          content: Text(errorMessage,textAlign: TextAlign.center),
+                          backgroundColor: Theme.of(context).errorColor,
+                        ),
+                     );
                       print(errorMessage);
                       setState(() {
                         errorMessage = null;
                       });
                     }
                     else {
+                      _reference.add({
+                        'Name': name,
+                        'Email': email,
+                      });
                       Navigator.push(
                           context,
                           MaterialPageRoute(builder: (context) => HomePage()));
@@ -186,7 +183,6 @@ class _RegistrationPageState extends State<RegistrationPage> {
                   elevation: 10.0,
                   color: Colors.blue,
                 ),
-                // checkError ? Text(errorMessage) : Text(''),
                 SizedBox(
                   height: 35.0,
                 ),
