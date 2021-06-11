@@ -13,6 +13,8 @@ class _LoginOrRegisterState extends State<LoginOrRegister> {
   FirebaseAuth _auth;
   String email;
   String password;
+  bool _showPassword = false;
+  String _errorMessage;
 
   @override
   void initState() {
@@ -54,6 +56,7 @@ class _LoginOrRegisterState extends State<LoginOrRegister> {
                     keyboardType: TextInputType.emailAddress,
                     decoration: InputDecoration(
                       hintText: 'Enter your email',
+                      prefixIcon: Icon(Icons.email),
                       border: OutlineInputBorder(
                         borderRadius: BorderRadius.circular(10.0),
                       ),
@@ -76,9 +79,20 @@ class _LoginOrRegisterState extends State<LoginOrRegister> {
                       password = value;
                       print(password);
                     },
-                    obscureText: true,
+                    obscureText: !this._showPassword,
                     decoration: InputDecoration(
                       hintText: 'Enter your password',
+                      prefixIcon: Icon(Icons.vpn_key),
+                      suffixIcon: IconButton(
+                        icon: Icon(
+                          Icons.remove_red_eye,
+                          color: this._showPassword ? Colors.blue : Colors.grey,
+                        ),
+                        onPressed: () {
+                          setState(
+                              () => this._showPassword = !this._showPassword);
+                        },
+                      ),
                       border: OutlineInputBorder(
                         borderRadius: BorderRadius.circular(10.0),
                       ),
@@ -86,7 +100,7 @@ class _LoginOrRegisterState extends State<LoginOrRegister> {
                   ),
                 ),
                 SizedBox(
-                  height: 10.0,
+                  height: 15.0,
                 ),
                 Flexible(
                   child: MaterialButton(
@@ -100,15 +114,32 @@ class _LoginOrRegisterState extends State<LoginOrRegister> {
                           print(password);
                           var user = _auth.signInWithEmailAndPassword(
                               email: email, password: password);
-                          if (user != null) {
-                            Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                    builder: (context) => HomePage()));
-                          }
+                          // if (user != null) {
+                          //   check = true;
+                          //   Navigator.push(
+                          //       context,
+                          //       MaterialPageRoute(
+                          //           builder: (context) => HomePage()));
+                          // }
                         }
-                      } catch (e) {
-                        print(e);
+                      } on FirebaseAuthException catch (e) {
+                        if( e.code == '' || e.code == '') {
+                            setState(() {
+                              _errorMessage = 'Invalid email or password';
+                            });
+                          }
+                      }
+                      if (_errorMessage != null) {
+                        print(_errorMessage);
+                        setState(() {
+                          _errorMessage = null;
+                        });
+                      }
+                      else {
+                        Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                                builder: (context) => HomePage()));
                       }
                     },
                     child: Text(
@@ -120,7 +151,7 @@ class _LoginOrRegisterState extends State<LoginOrRegister> {
                   ),
                 ),
                 SizedBox(
-                  height: 40.0,
+                  height: 35.0,
                 ),
                 Flexible(
                   child: GestureDetector(
@@ -131,7 +162,7 @@ class _LoginOrRegisterState extends State<LoginOrRegister> {
                               builder: (context) => RegistrationPage()));
                     },
                     child: Text(
-                      'Register Here',
+                      'Don\'t have an account? Sign Up',
                       textAlign: TextAlign.center,
                       style: TextStyle(color: Colors.green, fontSize: 15.0),
                     ),
