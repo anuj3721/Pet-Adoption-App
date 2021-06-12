@@ -22,6 +22,7 @@ class _CatScreenState extends State<CatScreen> {
   List<String> address = [];
   List<String> breed = [];
   List<String> age = [];
+  List<String> url = [];
 
   @override
   void initState() {
@@ -47,6 +48,7 @@ class _CatScreenState extends State<CatScreen> {
                 email.add(doc['Email']);
                 phoneNumber.add(doc['Phone Number']);
                 description.add(doc['Description']);
+                url.add(doc['url']);
               }
             });
           })
@@ -122,40 +124,40 @@ class _CatScreenState extends State<CatScreen> {
                   physics: BouncingScrollPhysics(),
                   child: Column(
                     children: <Widget>[
-                      GestureDetector(
-                        child: PetCardNew(
-                          imagePath: 'images/dog0.png',
-                          petName: 'Bruno',
-                          breed: 'German Shepherd',
-                          age: '4',
-                          distance: '5',
-                          gender: 'Male',
-                        ),
-                        onTap: () {
-                          Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                              builder: (context) => DescriptionScreen(),
-                            ),
-                          );
-                        },
-                      ),
-                      PetCardNew(
-                        imagePath: 'images/dog4.png',
-                        petName: 'Bruno',
-                        breed: 'German Shepherd',
-                        age: '5',
-                        distance: '5',
-                        gender: 'Male',
-                      ),
-                      PetCardNew(
-                        imagePath: 'images/dog2.png',
-                        petName: 'Bruno',
-                        breed: 'German Shepherd',
-                        age: '4',
-                        distance: '5',
-                        gender: 'Male',
-                      ),
+                      // GestureDetector(
+                      //   child: PetCardNew(
+                      //     imagePath: 'images/dog0.png',
+                      //     petName: 'Bruno',
+                      //     breed: 'German Shepherd',
+                      //     age: '4',
+                      //     distance: '5',
+                      //     gender: 'Male',
+                      //   ),
+                      //   onTap: () {
+                      //     Navigator.push(
+                      //       context,
+                      //       MaterialPageRoute(
+                      //         builder: (context) => DescriptionScreen(),
+                      //       ),
+                      //     );
+                      //   },
+                      // ),
+                      // PetCardNew(
+                      //   imagePath: 'images/dog4.png',
+                      //   petName: 'Bruno',
+                      //   breed: 'German Shepherd',
+                      //   age: '5',
+                      //   distance: '5',
+                      //   gender: 'Male',
+                      // ),
+                      // PetCardNew(
+                      //   imagePath: 'images/dog2.png',
+                      //   petName: 'Bruno',
+                      //   breed: 'German Shepherd',
+                      //   age: '4',
+                      //   distance: '5',
+                      //   gender: 'Male',
+                      // ),
                       ListView.builder(
                         physics: NeverScrollableScrollPhysics(),
                         scrollDirection: Axis.vertical,
@@ -168,7 +170,7 @@ class _CatScreenState extends State<CatScreen> {
                                   petName: petNames[index],
                                   breed: breed[index],
                                   gender: sex[index],
-                                  imagePath: 'images/dog2.png',
+                                  imagePath: url[index],
                                   age: age[index],
                                 );
                         },

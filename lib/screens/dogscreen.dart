@@ -21,6 +21,7 @@ class _DogScreenState extends State<DogScreen> {
   List<String> type = [];
   List<String> address = [];
   List<String> breed = [];
+  List<String> url = [];
   List<String> age = [];
 
   @override
@@ -29,6 +30,7 @@ class _DogScreenState extends State<DogScreen> {
     super.initState();
     _auth = FirebaseAuth.instance;
     _pets = FirebaseFirestore.instance.collection('Pet Data');
+
     getData();
     setState(() {});
   }
@@ -46,6 +48,7 @@ class _DogScreenState extends State<DogScreen> {
                 age.add(doc['Age']);
                 email.add(doc['Email']);
                 phoneNumber.add(doc['Phone Number']);
+                url.add(doc['url']);
                 description.add(doc['Description']);
               }
             });
@@ -122,40 +125,40 @@ class _DogScreenState extends State<DogScreen> {
                   physics: BouncingScrollPhysics(),
                   child: Column(
                     children: <Widget>[
-                      GestureDetector(
-                        child: PetCardNew(
-                          imagePath: 'images/dog0.png',
-                          petName: 'Bruno',
-                          breed: 'German Shepherd',
-                          age: '4',
-                          distance: '5',
-                          gender: 'Male',
-                        ),
-                        onTap: () {
-                          Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                              builder: (context) => DescriptionScreen(),
-                            ),
-                          );
-                        },
-                      ),
-                      PetCardNew(
-                        imagePath: 'images/dog4.png',
-                        petName: 'Bruno',
-                        breed: 'German Shepherd',
-                        age: '5',
-                        distance: '5',
-                        gender: 'Male',
-                      ),
-                      PetCardNew(
-                        imagePath: 'images/dog2.png',
-                        petName: 'Bruno',
-                        breed: 'German Shepherd',
-                        age: '4',
-                        distance: '5',
-                        gender: 'Male',
-                      ),
+                      // GestureDetector(
+                      //   child: PetCardNew(
+                      //     imagePath: 'images/dog0.png',
+                      //     petName: 'Bruno',
+                      //     breed: 'German Shepherd',
+                      //     age: '4',
+                      //     distance: '5',
+                      //     gender: 'Male',
+                      //   ),
+                      //   onTap: () {
+                      //     Navigator.push(
+                      //       context,
+                      //       MaterialPageRoute(
+                      //         builder: (context) => DescriptionScreen(),
+                      //       ),
+                      //     );
+                      //   },
+                      // ),
+                      // PetCardNew(
+                      //   imagePath: 'images/dog4.png',
+                      //   petName: 'Bruno',
+                      //   breed: 'German Shepherd',
+                      //   age: '5',
+                      //   distance: '5',
+                      //   gender: 'Male',
+                      // ),
+                      // PetCardNew(
+                      //   imagePath: 'images/dog2.png',
+                      //   petName: 'Bruno',
+                      //   breed: 'German Shepherd',
+                      //   age: '4',
+                      //   distance: '5',
+                      //   gender: 'Male',
+                      // ),
                       ListView.builder(
                         physics: NeverScrollableScrollPhysics(),
                         scrollDirection: Axis.vertical,
@@ -168,7 +171,7 @@ class _DogScreenState extends State<DogScreen> {
                                   petName: petNames[index],
                                   breed: breed[index],
                                   gender: sex[index],
-                                  imagePath: 'images/dog2.png',
+                                  imagePath: url[index],
                                   age: age[index],
                                 );
                         },

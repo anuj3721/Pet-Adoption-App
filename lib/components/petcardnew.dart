@@ -49,7 +49,7 @@ class PetCardNew extends StatelessWidget {
                   const EdgeInsets.symmetric(horizontal: 15.0, vertical: 10.0),
               child: Material(
                 elevation: 10.0,
-                child: Image.asset(imagePath),
+                child: Image.network(imagePath),
               ),
             ),
           ),
@@ -59,28 +59,32 @@ class PetCardNew extends StatelessWidget {
               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
               crossAxisAlignment: CrossAxisAlignment.stretch,
               children: [
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    Text(
-                      petName,
-                      textAlign: TextAlign.left,
-                      style: TextStyle(
-                        color: Colors.white,
-                        fontWeight: FontWeight.bold,
-                        fontSize: 20.0,
+                SingleChildScrollView(
+                  scrollDirection: Axis.horizontal,
+                  physics: BouncingScrollPhysics(),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Text(
+                        petName,
+                        textAlign: TextAlign.left,
+                        style: TextStyle(
+                          color: Colors.white,
+                          fontWeight: FontWeight.bold,
+                          fontSize: 20.0,
+                        ),
                       ),
-                    ),
-                    Icon(
-                      gender == 'Male'
-                          ? FontAwesomeIcons.mars
-                          : FontAwesomeIcons.venus,
-                      color: Colors.white,
-                    ),
-                    SizedBox(
-                      width: 10.0,
-                    ),
-                  ],
+                      Icon(
+                        gender == 'Male'
+                            ? FontAwesomeIcons.mars
+                            : FontAwesomeIcons.venus,
+                        color: Colors.white,
+                      ),
+                      SizedBox(
+                        width: 10.0,
+                      ),
+                    ],
+                  ),
                 ),
                 Text(
                   breed,
