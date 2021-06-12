@@ -1,6 +1,9 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:modal_progress_hud/modal_progress_hud.dart';
+//import 'package:pet_adoption_app/screens/dogscreen.dart';
+import 'package:pet_adoption_app/screens/homepage.dart';
 import 'package:pet_adoption_app/screens/imageCapture.dart';
 import 'package:pet_adoption_app/screens/loginORregister.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -22,7 +25,11 @@ class PostScreen extends StatefulWidget {
 class _PostScreenState extends State<PostScreen> {
   CollectionReference _reference;
   FirebaseAuth _auth;
+  bool isLoading = false;
+  String imageUrl;
+  bool isUploaded = false;
   final _formKey = GlobalKey<FormState>();
+
   @override
   void initState() {
     // TODO: implement initState
@@ -41,208 +48,242 @@ class _PostScreenState extends State<PostScreen> {
   Widget build(BuildContext context) {
     return SafeArea(
       child: Scaffold(
-        body: Form(
-          key: _formKey,
-          child: Padding(
-            padding: EdgeInsets.symmetric(horizontal: 10.0, vertical: 30.0),
-            child: SingleChildScrollView(
-              scrollDirection: Axis.vertical,
-              physics: BouncingScrollPhysics(),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.center,
-                children: <Widget>[
-                  Material(
-                    elevation: 10.0,
-                    child: Container(
-                      alignment: Alignment.center,
-                      height: 50.0,
-                      decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(4.0),
-                        color: Colors.teal,
-                      ),
-                      width: double.infinity,
-                      child: Text(
-                        'Pet Details',
-                        style: TextStyle(color: Colors.white, fontSize: 20.0),
-                      ),
-                    ),
-                  ),
-                  TypeDropDown(),
-                  Padding(
-                    padding: EdgeInsets.symmetric(vertical: 10.0),
-                    child: TextFormField(
-                      onChanged: (value) {
-                        _petName = value;
-                        print(_petName);
-                      },
-                      decoration: InputDecoration(
-                          labelText: 'Enter Pet Name',
-                          border: OutlineInputBorder(
-                              borderRadius: BorderRadius.circular(10.0))),
-                      // The validator receives the text that the user has entered.
-                      validator: (value) {
-                        if (value == null || value.isEmpty) {
-                          return 'Please enter some text';
-                        }
-                        return null;
-                      },
-                    ),
-                  ),
-                  Padding(
-                    padding: EdgeInsets.symmetric(vertical: 10.0),
-                    child: TextFormField(
-                      onChanged: (value) {
-                        _breed = value;
-                        print(_breed);
-                      },
-                      decoration: InputDecoration(
-                          labelText: 'Breed',
-                          border: OutlineInputBorder(
-                              borderRadius: BorderRadius.circular(10.0))),
-                      // The validator receives the text that the user has entered.
-                      validator: (value) {
-                        if (value == null || value.isEmpty) {
-                          return 'Please enter some text';
-                        }
-                        return null;
-                      },
-                    ),
-                  ),
-                  SexDropDown(),
-                  Padding(
-                    padding: EdgeInsets.symmetric(vertical: 10.0),
-                    child: TextFormField(
-                      keyboardType: TextInputType.multiline,
-                      maxLines: null,
-                      onChanged: (value) {
-                        _description = value;
-                        print(_description);
-                      },
-                      decoration: InputDecoration(
-                          labelText: 'Description',
-                          border: OutlineInputBorder(
-                              borderRadius: BorderRadius.circular(10.0))),
-                      // The validator receives the text that the user has entered.
-                      validator: (value) {
-                        if (value == null || value.isEmpty) {
-                          return 'Please enter some text';
-                        }
-                        return null;
-                      },
-                    ),
-                  ),
-                  Material(
-                    elevation: 10.0,
-                    child: Container(
-                      alignment: Alignment.center,
-                      height: 50.0,
-                      decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(4.0),
-                        color: Colors.teal,
-                      ),
-                      width: double.infinity,
-                      child: Text(
-                        'Owner Details',
-                        style: TextStyle(color: Colors.white, fontSize: 20.0),
+        body: ModalProgressHUD(
+          inAsyncCall: isLoading,
+          child: Form(
+            key: _formKey,
+            child: Padding(
+              padding: EdgeInsets.symmetric(horizontal: 10.0, vertical: 30.0),
+              child: SingleChildScrollView(
+                scrollDirection: Axis.vertical,
+                physics: BouncingScrollPhysics(),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: <Widget>[
+                    Material(
+                      elevation: 10.0,
+                      child: Container(
+                        alignment: Alignment.center,
+                        height: 50.0,
+                        decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(4.0),
+                          color: Colors.teal,
+                        ),
+                        width: double.infinity,
+                        child: Text(
+                          'Pet Details',
+                          style: TextStyle(color: Colors.white, fontSize: 20.0),
+                        ),
                       ),
                     ),
-                  ),
-                  Padding(
-                    padding: EdgeInsets.symmetric(vertical: 10.0),
-                    child: TextFormField(
-                      keyboardType: TextInputType.multiline,
-                      maxLines: null,
-                      onChanged: (value) {
-                        _address = value;
-                        print(_address);
-                      },
-                      decoration: InputDecoration(
-                          labelText: 'Address',
-                          border: OutlineInputBorder(
-                              borderRadius: BorderRadius.circular(10.0))),
-                      // The validator receives the text that the user has entered.
-                      validator: (value) {
-                        if (value == null || value.isEmpty) {
-                          return 'Please enter some text';
-                        }
-                        return null;
-                      },
+                    TypeDropDown(),
+                    Padding(
+                      padding: EdgeInsets.symmetric(vertical: 10.0),
+                      child: TextFormField(
+                        onChanged: (value) {
+                          _petName = value;
+                          print(_petName);
+                        },
+                        decoration: InputDecoration(
+                            labelText: 'Enter Pet Name',
+                            border: OutlineInputBorder(
+                                borderRadius: BorderRadius.circular(10.0))),
+                        // The validator receives the text that the user has entered.
+                        validator: (value) {
+                          if (value == null || value.isEmpty) {
+                            return 'Please enter some text';
+                          }
+                          return null;
+                        },
+                      ),
                     ),
-                  ),
-                  Padding(
-                    padding: EdgeInsets.symmetric(vertical: 10.0),
-                    child: TextFormField(
-                      onChanged: (value) {
-                        _phoneNumber = value;
-                        print(_phoneNumber);
-                      },
-                      keyboardType: TextInputType.number,
-                      decoration: InputDecoration(
-                          labelText: 'Phone Number',
-                          border: OutlineInputBorder(
-                              borderRadius: BorderRadius.circular(10.0))),
-                      // The validator receives the text that the user has entered.
-                      validator: (value) {
-                        if (value == null || value.isEmpty) {
-                          return 'Please enter some text';
-                        }
-                        if ( value.length != 10) {
+                    Padding(
+                      padding: EdgeInsets.symmetric(vertical: 10.0),
+                      child: TextFormField(
+                        onChanged: (value) {
+                          _breed = value;
+                          print(_breed);
+                        },
+                        decoration: InputDecoration(
+                            labelText: 'Breed',
+                            border: OutlineInputBorder(
+                                borderRadius: BorderRadius.circular(10.0))),
+                        // The validator receives the text that the user has entered.
+                        validator: (value) {
+                          if (value == null || value.isEmpty) {
+                            return 'Please enter some text';
+                          }
+                          return null;
+                        },
+                      ),
+                    ),
+                    SexDropDown(),
+                    Padding(
+                      padding: EdgeInsets.symmetric(vertical: 10.0),
+                      child: TextFormField(
+                        keyboardType: TextInputType.multiline,
+                        maxLines: null,
+                        onChanged: (value) {
+                          _description = value;
+                          print(_description);
+                        },
+                        decoration: InputDecoration(
+                            labelText: 'Description',
+                            border: OutlineInputBorder(
+                                borderRadius: BorderRadius.circular(10.0))),
+                        // The validator receives the text that the user has entered.
+                        validator: (value) {
+                          if (value == null || value.isEmpty) {
+                            return 'Please enter some text';
+                          }
+                          return null;
+                        },
+                      ),
+                    ),
+                    Material(
+                      elevation: 10.0,
+                      child: Container(
+                        alignment: Alignment.center,
+                        height: 50.0,
+                        decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(4.0),
+                          color: Colors.teal,
+                        ),
+                        width: double.infinity,
+                        child: Text(
+                          'Owner Details',
+                          style: TextStyle(color: Colors.white, fontSize: 20.0),
+                        ),
+                      ),
+                    ),
+                    Padding(
+                      padding: EdgeInsets.symmetric(vertical: 10.0),
+                      child: TextFormField(
+                        keyboardType: TextInputType.multiline,
+                        maxLines: null,
+                        onChanged: (value) {
+                          _address = value;
+                          print(_address);
+                        },
+                        decoration: InputDecoration(
+                            labelText: 'Address',
+                            border: OutlineInputBorder(
+                                borderRadius: BorderRadius.circular(10.0))),
+                        // The validator receives the text that the user has entered.
+                        validator: (value) {
+                          if (value == null || value.isEmpty) {
+                            return 'Please enter some text';
+                          }
+                          return null;
+                        },
+                      ),
+                    ),
+                    Padding(
+                      padding: EdgeInsets.symmetric(vertical: 10.0),
+                      child: TextFormField(
+                        onChanged: (value) {
+                          _phoneNumber = value;
+                          print(_phoneNumber);
+                        },
+                        keyboardType: TextInputType.number,
+                        decoration: InputDecoration(
+                            labelText: 'Phone Number',
+                            border: OutlineInputBorder(
+                                borderRadius: BorderRadius.circular(10.0))),
+                        // The validator receives the text that the user has entered.
+                        validator: (value) {
+                          if (value == null || value.isEmpty) {
+                            return 'Please enter some text';
+                          }
+                          if (value.length != 10) {
                             return 'Enter 10 digit phone number';
                           }
-                        return null;
-                      },
-                    ),
-                  ),
-                  Padding(
-                    padding: EdgeInsets.symmetric(vertical: 10.0),
-                    child: TextButton(
-                      onPressed: () {},
-                      child: Text(
-                        'Upload Image',
-                        style: TextStyle(color: Colors.white, fontSize: 20.0),
-                      ),
-                      style: TextButton.styleFrom(
-                        minimumSize: Size(double.infinity, 50.0),
-                        backgroundColor: Colors.blue,
-                        elevation: 10.0,
+                          return null;
+                        },
                       ),
                     ),
-                  ),
-                  Padding(
-                    padding: EdgeInsets.symmetric(vertical: 10.0),
-                    child: TextButton(
-                      onPressed: () {
-                        // Validate returns true if the form is valid, or false otherwise.
-                        if (_formKey.currentState.validate()) {
-                          // If the form is valid, display a snackbar. In the real world,
-                          // you'd often call a server or save the information in a database.
-                          Scaffold.of(context).showSnackBar(
-                              SnackBar(content: Text('Processing',
-                              textAlign: TextAlign.center,)));
-                          _reference.add({
-                            'Address': _address,
-                            'Breed': _breed,
-                            'Description': _description,
-                            'Email': _auth.currentUser.email,
-                            'Pet Name': _petName,
-                            'Phone Number': int.parse(_phoneNumber),
-                            'Sex': _sex,
-                            'Type': _type,
+                    Padding(
+                      padding: EdgeInsets.symmetric(vertical: 10.0),
+                      child: TextButton(
+                        onPressed: () async {
+                          final result = await Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) => ImageCapture(),
+                            ),
+                          );
+                          setState(() {
+                            imageUrl = result;
+                            isUploaded = true;
                           });
-                        }
-                      },
-                      child: Text(
-                        'Submit',
-                        style: TextStyle(color: Colors.white, fontSize: 20.0),
-                      ),
-                      style: TextButton.styleFrom(
-                        minimumSize: Size(double.infinity, 50.0),
-                        backgroundColor: Colors.blue,
-                        elevation: 10.0,
+                        },
+                        child: !isUploaded
+                            ? Text(
+                                'Upload Image',
+                                style: TextStyle(
+                                    color: Colors.white, fontSize: 20.0),
+                              )
+                            : ListTile(
+                                title: Text(
+                                  'Uploaded',
+                                  style: TextStyle(
+                                      color: Colors.white, fontSize: 20.0),
+                                ),
+                                trailing:
+                                    Icon(Icons.check_circle_outline_rounded),
+                              ),
+                        style: TextButton.styleFrom(
+                          minimumSize: Size(double.infinity, 50.0),
+                          backgroundColor:
+                              isUploaded ? Colors.green : Colors.blue,
+                          elevation: 10.0,
+                        ),
                       ),
                     ),
-                  ),
-                ],
+                    Padding(
+                      padding: EdgeInsets.symmetric(vertical: 10.0),
+                      child: TextButton(
+                        onPressed: () {
+                          // Validate returns true if the form is valid, or false otherwise.
+                          if (_formKey.currentState.validate()) {
+                            setState(() {
+                              isLoading = true;
+                            });
+                            _reference.add({
+                              'Address': _address,
+                              'Breed': _breed,
+                              'Description': _description,
+                              'Email': _auth.currentUser.email,
+                              'Pet Name': _petName,
+                              'Phone Number': int.parse(_phoneNumber),
+                              'Sex': _sex,
+                              'Type': _type,
+                              'url': imageUrl,
+                            });
+                            setState(() {
+                              isLoading = false;
+                              isUploaded = false;
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                    builder: (context) => HomePage()),
+                              );
+                            });
+                          }
+                        },
+                        child: Text(
+                          'Submit',
+                          style: TextStyle(color: Colors.white, fontSize: 20.0),
+                        ),
+                        style: TextButton.styleFrom(
+                          minimumSize: Size(double.infinity, 50.0),
+                          backgroundColor: Colors.blue,
+                          elevation: 10.0,
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
               ),
             ),
           ),
