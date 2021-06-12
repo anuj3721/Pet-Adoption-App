@@ -1,3 +1,4 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:pet_adoption_app/components/petcardnew.dart';
 import 'package:pet_adoption_app/screens/descriptionScreen.dart';
@@ -11,18 +12,51 @@ class DogScreen extends StatefulWidget {
 class _DogScreenState extends State<DogScreen> {
   final GlobalKey<ScaffoldState> _scaffoldKey = new GlobalKey<ScaffoldState>();
   FirebaseAuth _auth;
+  CollectionReference _pets;
+  List<String> description = [];
+  List<int> phoneNumber = [];
+  List<String> email = [];
+  List<String> petNames = [];
+  List<String> sex = [];
+  List<String> type = [];
+  List<String> address = [];
+  List<String> breed = [];
+  List<String> age = [];
 
   @override
   void initState() {
     // TODO: implement initState
     super.initState();
     _auth = FirebaseAuth.instance;
+    _pets = FirebaseFirestore.instance.collection('Pet Data');
+    getData();
+    setState(() {});
+  }
+
+  void getData() async {
+    await _pets.get().then((QuerySnapshot querySnapshot) => {
+          querySnapshot.docs.forEach((doc) {
+            setState(() {
+              if (doc['Type'] == 'Dog') {
+                petNames.add(doc['Pet Name']);
+                sex.add(doc['Sex']);
+                type.add(doc['Type']);
+                address.add(doc['Address']);
+                breed.add(doc['Breed']);
+                age.add(doc['Age']);
+                email.add(doc['Email']);
+                phoneNumber.add(doc['Phone Number']);
+                description.add(doc['Description']);
+              }
+            });
+          })
+        });
   }
 
   @override
   Widget build(BuildContext context) {
     return SafeArea(
-      child: new Scaffold(
+      child: Scaffold(
         drawer: Drawer(
           child: ListTile(
             title: Text('LOGOUT'),
@@ -84,6 +118,8 @@ class _DogScreenState extends State<DogScreen> {
             Expanded(
               child: Container(
                 child: SingleChildScrollView(
+                  scrollDirection: Axis.vertical,
+                  physics: BouncingScrollPhysics(),
                   child: Column(
                     children: <Widget>[
                       GestureDetector(
@@ -93,7 +129,7 @@ class _DogScreenState extends State<DogScreen> {
                           breed: 'German Shepherd',
                           age: '4',
                           distance: '5',
-                          gender: 'male',
+                          gender: 'Male',
                         ),
                         onTap: () {
                           Navigator.push(
@@ -110,7 +146,7 @@ class _DogScreenState extends State<DogScreen> {
                         breed: 'German Shepherd',
                         age: '5',
                         distance: '5',
-                        gender: 'male',
+                        gender: 'Male',
                       ),
                       PetCardNew(
                         imagePath: 'images/dog2.png',
@@ -118,7 +154,24 @@ class _DogScreenState extends State<DogScreen> {
                         breed: 'German Shepherd',
                         age: '4',
                         distance: '5',
-                        gender: 'male',
+                        gender: 'Male',
+                      ),
+                      ListView.builder(
+                        physics: NeverScrollableScrollPhysics(),
+                        scrollDirection: Axis.vertical,
+                        shrinkWrap: true,
+                        itemCount: petNames.length,
+                        itemBuilder: (context, index) {
+                          return petNames.length == 0
+                              ? null
+                              : PetCardNew(
+                                  petName: petNames[index],
+                                  breed: breed[index],
+                                  gender: sex[index],
+                                  imagePath: 'images/dog2.png',
+                                  age: age[index],
+                                );
+                        },
                       ),
                     ],
                   ),

@@ -138,13 +138,10 @@ class _RegistrationPageState extends State<RegistrationPage> {
                       if (_formKey.currentState.validate()) {
                         var user = await _auth.createUserWithEmailAndPassword(
                             email: email, password: password);
-                          _reference.add({
-                            'Name': name,
-                            'Email': email,
-                          });
-                          // Navigator.push(
-                          //     context,
-                          //     MaterialPageRoute(builder: (context) => HomePage()));
+
+                        // Navigator.push(
+                        //     context,
+                        //     MaterialPageRoute(builder: (context) => HomePage()));
                       }
                     } on FirebaseAuthException catch (error) {
                       switch (error.code) {
@@ -161,21 +158,22 @@ class _RegistrationPageState extends State<RegistrationPage> {
                       }
                     }
                     if (errorMessage != null) {
-                      // ----------------
-                    // Scaffold.of(context).showSnackBar(
-                    //     SnackBar(
-                    //       content: Text(errorMessage),
-                    //       backgroundColor: Theme.of(context).errorColor,
-                    //     ),
-                    //  );
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        SnackBar(
+                          content: Text(errorMessage),
+                          backgroundColor: Theme.of(context).errorColor,
+                        ),
+                      );
                       print(errorMessage);
                       setState(() {
                         errorMessage = null;
                       });
-                    }
-                    else {
-                      Navigator.push(
-                          context,
+                    } else {
+                      _reference.add({
+                        'Name': name,
+                        'Email': email,
+                      });
+                      Navigator.push(context,
                           MaterialPageRoute(builder: (context) => HomePage()));
                     }
                   },

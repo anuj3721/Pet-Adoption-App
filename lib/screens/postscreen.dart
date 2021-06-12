@@ -13,6 +13,7 @@ String _breed;
 String _description;
 String _address;
 String _phoneNumber;
+String _age;
 
 class PostScreen extends StatefulWidget {
   @override
@@ -108,6 +109,26 @@ class _PostScreenState extends State<PostScreen> {
                       },
                     ),
                   ),
+                  Padding(
+                    padding: EdgeInsets.symmetric(vertical: 10.0),
+                    child: TextFormField(
+                      onChanged: (value) {
+                        _age = value;
+                        print(_age);
+                      },
+                      decoration: InputDecoration(
+                          labelText: 'Age',
+                          border: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(10.0))),
+                      // The validator receives the text that the user has entered.
+                      validator: (value) {
+                        if (value == null || value.isEmpty) {
+                          return 'Please enter some text';
+                        }
+                        return null;
+                      },
+                    ),
+                  ),
                   SexDropDown(),
                   Padding(
                     padding: EdgeInsets.symmetric(vertical: 10.0),
@@ -186,9 +207,9 @@ class _PostScreenState extends State<PostScreen> {
                         if (value == null || value.isEmpty) {
                           return 'Please enter some text';
                         }
-                        if ( value.length != 10) {
-                            return 'Enter 10 digit phone number';
-                          }
+                        if (value.length != 10) {
+                          return 'Enter 10 digit phone number';
+                        }
                         return null;
                       },
                     ),
@@ -216,9 +237,11 @@ class _PostScreenState extends State<PostScreen> {
                         if (_formKey.currentState.validate()) {
                           // If the form is valid, display a snackbar. In the real world,
                           // you'd often call a server or save the information in a database.
-                          Scaffold.of(context).showSnackBar(
-                              SnackBar(content: Text('Processing',
-                              textAlign: TextAlign.center,)));
+                          Scaffold.of(context).showSnackBar(SnackBar(
+                              content: Text(
+                            'Processing',
+                            textAlign: TextAlign.center,
+                          )));
                           _reference.add({
                             'Address': _address,
                             'Breed': _breed,
@@ -228,6 +251,7 @@ class _PostScreenState extends State<PostScreen> {
                             'Phone Number': int.parse(_phoneNumber),
                             'Sex': _sex,
                             'Type': _type,
+                            'Age': _age,
                           });
                         }
                       },

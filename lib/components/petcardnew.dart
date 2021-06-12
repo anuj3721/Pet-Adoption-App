@@ -15,8 +15,8 @@ class PetCardNew extends StatelessWidget {
     this.petId,
     this.petName,
     this.breed,
-    this.age,
-    this.distance,
+    this.age = '4',
+    this.distance = '5',
     this.gender,
     this.imagePath,
   });
@@ -72,7 +72,7 @@ class PetCardNew extends StatelessWidget {
                       ),
                     ),
                     Icon(
-                      gender == 'male'
+                      gender == 'Male'
                           ? FontAwesomeIcons.mars
                           : FontAwesomeIcons.venus,
                       color: Colors.white,
@@ -107,8 +107,10 @@ class PetCardNew extends StatelessWidget {
                     ),
                     Text(
                       ' Distance: ' + distance + ' Km',
-                      style: TextStyle(color: Colors.white,
-                        fontSize: 16.0,),
+                      style: TextStyle(
+                        color: Colors.white,
+                        fontSize: 16.0,
+                      ),
                     )
                   ],
                 ),
