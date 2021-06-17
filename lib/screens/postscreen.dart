@@ -2,12 +2,14 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:modal_progress_hud/modal_progress_hud.dart';
+import 'package:pet_adoption_app/components/indianCities.dart';
 //import 'package:pet_adoption_app/screens/dogscreen.dart';
 import 'package:pet_adoption_app/screens/homepage.dart';
 import 'package:pet_adoption_app/screens/imageCapture.dart';
 import 'package:pet_adoption_app/screens/loginORregister.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'dart:async';
+import 'package:searchable_dropdown/searchable_dropdown.dart';
 
 String _sex;
 String _type;
@@ -17,6 +19,8 @@ String _description;
 String _address;
 String _phoneNumber;
 String _age;
+String _ageUnit;
+String _selectedCityValue;
 
 class PostScreen extends StatefulWidget {
   @override
@@ -118,25 +122,38 @@ class _PostScreenState extends State<PostScreen> {
                         },
                       ),
                     ),
-                    Padding(
-                      padding: EdgeInsets.symmetric(vertical: 10.0),
-                      child: TextFormField(
-                        onChanged: (value) {
-                          _age = value;
-                          print(_age);
-                        },
-                        decoration: InputDecoration(
-                            labelText: 'Age',
-                            border: OutlineInputBorder(
-                                borderRadius: BorderRadius.circular(10.0))),
-                        // The validator receives the text that the user has entered.
-                        validator: (value) {
-                          if (value == null || value.isEmpty) {
-                            return 'Please enter some text';
-                          }
-                          return null;
-                        },
-                      ),
+                    Row(
+                      children: [
+                        Expanded(
+                          child: Padding(
+                            padding: EdgeInsets.symmetric(vertical: 10.0),
+                            child: TextFormField(
+                              onChanged: (value) {
+                                _age = value;
+                                print(_age);
+                              },
+                              decoration: InputDecoration(
+                                  labelText: 'Age',
+                                  border: OutlineInputBorder(
+                                      borderRadius:
+                                          BorderRadius.circular(10.0))),
+                              // The validator receives the text that the user has entered.
+                              validator: (value) {
+                                if (value == null || value.isEmpty) {
+                                  return 'Please enter some text';
+                                }
+                                return null;
+                              },
+                            ),
+                          ),
+                        ),
+                        SizedBox(
+                          width: 10.0,
+                        ),
+                        Expanded(
+                          child: AgeDropDown(),
+                        ),
+                      ],
                     ),
                     SexDropDown(),
                     Padding(
@@ -223,6 +240,7 @@ class _PostScreenState extends State<PostScreen> {
                         },
                       ),
                     ),
+                    CitySearchDropdown(),
                     Padding(
                       padding: EdgeInsets.symmetric(vertical: 10.0),
                       child: TextButton(
@@ -235,8 +253,7 @@ class _PostScreenState extends State<PostScreen> {
                           );
                           setState(() {
                             imageUrl = result;
-                            if(imageUrl != null)
-                              isUploaded = true;
+                            if (imageUrl != null) isUploaded = true;
                           });
                         },
                         child: !isUploaded
@@ -281,7 +298,8 @@ class _PostScreenState extends State<PostScreen> {
                               'Sex': _sex,
                               'Type': _type,
                               'url': imageUrl,
-                              'Age': _age,
+                              'Age': _age + ' ' + _ageUnit,
+                              'City': _selectedCityValue,
                             });
                             setState(() {
                               isLoading = false;
@@ -337,7 +355,7 @@ class _SexDropDownState extends State<SexDropDown> {
   @override
   Widget build(BuildContext context) {
     return Container(
-      height: 50.0,
+      height: 60.0,
       padding: EdgeInsets.symmetric(horizontal: 10.0),
       margin: EdgeInsets.symmetric(vertical: 10.0),
       width: double.infinity,
@@ -400,7 +418,7 @@ class _TypeDropDownState extends State<TypeDropDown> {
   @override
   Widget build(BuildContext context) {
     return Container(
-      height: 50.0,
+      height: 60.0,
       padding: EdgeInsets.symmetric(horizontal: 10.0),
       margin: EdgeInsets.symmetric(vertical: 10.0),
       width: double.infinity,
@@ -445,6 +463,122 @@ class _TypeDropDownState extends State<TypeDropDown> {
               });
             },
           ),
+        ),
+      ),
+    );
+  }
+}
+
+//Age Drop Down
+
+class AgeDropDown extends StatefulWidget {
+  @override
+  State<AgeDropDown> createState() => _AgeDropDownState();
+}
+
+/// This is the private State class that goes with MyStatefulWidget.
+class _AgeDropDownState extends State<AgeDropDown> {
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      height: 70.0,
+      padding: EdgeInsets.symmetric(horizontal: 10.0),
+      margin: EdgeInsets.symmetric(vertical: 10.0),
+      width: double.infinity,
+      decoration: BoxDecoration(
+        borderRadius: BorderRadius.circular(10.0),
+        border: Border(
+          top: BorderSide(color: Colors.grey),
+          left: BorderSide(color: Colors.grey),
+          bottom: BorderSide(color: Colors.grey),
+          right: BorderSide(color: Colors.grey),
+        ),
+      ),
+      child: Center(
+        child: DropdownButtonHideUnderline(
+          child: DropdownButtonFormField<String>(
+            isExpanded: true,
+            focusColor: Colors.white,
+            value: _ageUnit,
+            style: TextStyle(color: Colors.white),
+            iconEnabledColor: Colors.black,
+            items: <String>[
+              'Weeks',
+              'Months',
+              'Years',
+            ].map<DropdownMenuItem<String>>((String value) {
+              return DropdownMenuItem<String>(
+                value: value,
+                child: Text(
+                  value,
+                  style: TextStyle(color: Colors.black),
+                ),
+              );
+            }).toList(),
+            hint: Text(
+              "Unit",
+              style: TextStyle(
+                color: Colors.teal.shade900,
+                fontSize: 14,
+              ),
+            ),
+            onChanged: (String value) {
+              setState(() {
+                _ageUnit = value;
+                print(_ageUnit);
+              });
+            },
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+//Searchable City Drop Down
+
+class CitySearchDropdown extends StatefulWidget {
+  @override
+  _CitySearchDropdownState createState() => _CitySearchDropdownState();
+}
+
+class _CitySearchDropdownState extends State<CitySearchDropdown> {
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      height: 70.0,
+      padding: EdgeInsets.symmetric(horizontal: 10.0),
+      margin: EdgeInsets.symmetric(vertical: 10.0),
+      width: double.infinity,
+      decoration: BoxDecoration(
+        borderRadius: BorderRadius.circular(10.0),
+        border: Border(
+          top: BorderSide(color: Colors.grey),
+          left: BorderSide(color: Colors.grey),
+          bottom: BorderSide(color: Colors.grey),
+          right: BorderSide(color: Colors.grey),
+        ),
+      ),
+      child: Center(
+        child: SearchableDropdown.single(
+          items: Cities()
+              .returnCities()
+              .map<DropdownMenuItem<String>>((String value) {
+            return DropdownMenuItem<String>(
+              value: value,
+              child: Text(value),
+            );
+          }).toList(),
+          value: _selectedCityValue,
+          hint: "Choose your city",
+          searchHint: "Choose your city",
+          onChanged: (value) {
+            setState(() {
+              _selectedCityValue = value;
+              print(_selectedCityValue);
+            });
+          },
+          isExpanded: true,
         ),
       ),
     );
