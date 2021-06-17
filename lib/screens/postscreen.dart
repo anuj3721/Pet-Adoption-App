@@ -3,7 +3,6 @@ import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:modal_progress_hud/modal_progress_hud.dart';
 import 'package:pet_adoption_app/components/indianCities.dart';
-//import 'package:pet_adoption_app/screens/dogscreen.dart';
 import 'package:pet_adoption_app/screens/homepage.dart';
 import 'package:pet_adoption_app/screens/imageCapture.dart';
 import 'package:pet_adoption_app/screens/loginORregister.dart';
@@ -246,7 +245,7 @@ class _PostScreenState extends State<PostScreen> {
                       child: TextButton(
                         onPressed: () async {
                           var result;
-                          if (imageUrl == null) {
+                          if (!isUploaded) {
                             result = await Navigator.push(
                               context,
                               MaterialPageRoute(
@@ -254,7 +253,7 @@ class _PostScreenState extends State<PostScreen> {
                               ),
                             );
                           }
-                          else {
+                          else if(isUploaded){
                             ScaffoldMessenger.of(context).showSnackBar(
                               SnackBar(
                                 content: Text('Image already uploaded',
@@ -264,8 +263,9 @@ class _PostScreenState extends State<PostScreen> {
                             );
                           }
                           setState(() {
-                            imageUrl = result;
-                            if (imageUrl != null) isUploaded = true;
+                            if(imageUrl == null)
+                                imageUrl = result;
+                              isUploaded = true;
                           });
                         },
                         child: !isUploaded

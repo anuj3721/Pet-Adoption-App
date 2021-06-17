@@ -23,6 +23,7 @@ class _DogScreenState extends State<DogScreen> {
   List<String> breed = [];
   List<String> url = [];
   List<String> age = [];
+  List<String> city = [];
 
   @override
   void initState() {
@@ -50,6 +51,7 @@ class _DogScreenState extends State<DogScreen> {
                 phoneNumber.add(doc['Phone Number']);
                 url.add(doc['url']);
                 description.add(doc['Description']);
+                city.add(doc['City']);
               }
             });
           })
@@ -174,6 +176,7 @@ class _DogScreenState extends State<DogScreen> {
                                     gender: sex[index],
                                     imagePath: url[index],
                                     age: age[index],
+                                    city: city[index],
                                   ),
                                   onTap: () {
                                     Navigator.push(
@@ -186,7 +189,9 @@ class _DogScreenState extends State<DogScreen> {
                                             sex: sex[index],
                                             url: url[index],
                                             description: description[index],
-                                            age: age[index]),
+                                            age: age[index],
+                                            city: city[index],
+                                        ),
                                       ),
                                     );
                                   },

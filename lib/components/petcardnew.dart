@@ -7,16 +7,16 @@ class PetCardNew extends StatelessWidget {
   String petName = '';
   String breed = '';
   String age = '';
-  String distance = '';
   String gender = '';
   String imagePath = '';
+  String city = '';
 
   PetCardNew({
     this.petId,
     this.petName,
     this.breed,
-    this.age = '4',
-    this.distance = '5',
+    this.age,
+    this.city,
     this.gender,
     this.imagePath,
   });
@@ -66,7 +66,7 @@ class PetCardNew extends StatelessWidget {
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
                       Text(
-                        petName,
+                        petName + ' ',
                         textAlign: TextAlign.left,
                         style: TextStyle(
                           color: Colors.white,
@@ -91,7 +91,8 @@ class PetCardNew extends StatelessWidget {
                   textAlign: TextAlign.left,
                   style: TextStyle(
                     color: Colors.white,
-                    fontSize: 16.0,
+                    fontWeight: FontWeight.w400,
+                    fontSize: 17.0,
                   ),
                 ),
                 Text(
@@ -99,7 +100,8 @@ class PetCardNew extends StatelessWidget {
                   textAlign: TextAlign.left,
                   style: TextStyle(
                     color: Colors.white,
-                    fontSize: 16.0,
+                    fontWeight: FontWeight.w400,
+                    fontSize: 17.0,
                   ),
                 ),
                 Row(
@@ -110,9 +112,10 @@ class PetCardNew extends StatelessWidget {
                       color: Colors.white,
                     ),
                     Text(
-                      ' Distance: ' + distance + ' Km',
+                      ' Location: ' + city,
                       style: TextStyle(
                         color: Colors.white,
+                        fontWeight: FontWeight.w400,
                         fontSize: 16.0,
                       ),
                     )

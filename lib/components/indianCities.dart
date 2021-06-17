@@ -259,6 +259,7 @@ class Cities {
     'Jamtara',
     'Khunti',
     'Koderma',
+    'Mussorie',
     'Latehar',
     'Lohardaga',
     'Pakur',

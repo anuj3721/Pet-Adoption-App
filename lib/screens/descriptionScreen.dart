@@ -1,4 +1,6 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:photo_view/photo_view.dart';
 // import 'package:carousel_slider/carousel_slider.dart';
 
@@ -13,14 +15,18 @@ class DescriptionScreen extends StatelessWidget {
   String breed;
   String url;
   String age;
-  DescriptionScreen(
-      {this.description,
-      this.petNames,
-      this.sex,
-      this.address,
-      this.breed,
-      this.url,
-      this.age});
+  String city;
+
+  DescriptionScreen({
+    this.description,
+    this.petNames,
+    this.sex,
+    this.address,
+    this.breed,
+    this.url,
+    this.age,
+    this.city,
+  });
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -49,7 +55,7 @@ class DescriptionScreen extends StatelessWidget {
                     //       .toList(),
                     // ),
                     child: PhotoView(
-                        imageProvider: NetworkImage(url),
+                      imageProvider: NetworkImage(url),
                       customSize: MediaQuery.of(context).size,
                       backgroundDecoration: BoxDecoration(color: Colors.white),
                     ),
@@ -77,6 +83,110 @@ class DescriptionScreen extends StatelessWidget {
                 color: Colors.white,
                 child: Column(
                   children: [
+                    SizedBox(height: 10.0,),
+                    Align(
+                      alignment: Alignment.center,
+                      child: Container(
+                        height: 120,
+                        padding: EdgeInsets.all(20),
+                        margin: EdgeInsets.symmetric(
+                          horizontal: 20,
+                        ),
+                        decoration: BoxDecoration(
+                          color: Colors.white,
+                          boxShadow: [
+                            BoxShadow(
+                              color: Colors.black.withOpacity(0.3),
+                              blurRadius: 30,
+                              offset: Offset(0, 10),
+                            ),
+                          ],
+                          borderRadius: BorderRadius.circular(30),
+                        ),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: [
+                                Text(
+                                  petNames,
+                                  style: TextStyle(
+                                    //   color: fadedBlack,
+                                    fontSize: 20,
+                                    fontWeight: FontWeight.w400,
+                                  ),
+                                ),
+                                Row(
+                                  children: [
+                                    Text(
+                                      sex,
+                                      style: TextStyle(
+                                        fontSize: 16,
+                                        fontWeight: FontWeight.w400,
+                                      ),
+                                    ),
+                                    SizedBox(width: 10.0),
+                                    Icon(
+                                      sex == 'female'
+                                          ? FontAwesomeIcons.venus
+                                          : FontAwesomeIcons.mars,
+                                      size: 20,
+                                      color: Colors.black54,
+                                    ),
+                                  ],
+                                )
+                              ],
+                            ),
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: [
+                                Text(
+                                  breed,
+                                  style: TextStyle(
+                                    fontSize: 16,
+                                    color: Colors.black,
+                                    fontWeight: FontWeight.w400,
+                                  ),
+                                ),
+                                Text(
+                                  age,
+                                  style: TextStyle(
+                                    fontSize: 16,
+                                    color: Colors.black,
+                                    fontWeight: FontWeight.w400,
+                                  ),
+                                ),
+                              ],
+                            ),
+                            Row(
+                              children: [
+                                Icon(
+                                  Icons.location_pin,
+                                  size: 18,
+                                  color: Colors.blueGrey,
+                                ),
+                                SizedBox(
+                                  width: 5,
+                                ),
+                                Text(
+                                  address + ', ' + city,
+                                  style: TextStyle(
+                                    fontSize: 16,
+                                    color: Colors.black,
+                                    fontWeight: FontWeight.w400,
+                                  ),
+                                )
+                              ],
+                            )
+                          ],
+                        ),
+                      ),
+                    ),
+                    SizedBox(
+                      height: 15.0,
+                    ),
                     Expanded(
                       flex: 2,
                       child: Row(
@@ -84,12 +194,12 @@ class DescriptionScreen extends StatelessWidget {
                         children: [
                           CircleAvatar(
                             child: Image.asset('images/unknown_account.jpg'),
-                            radius: 35.0,
+                            radius: 25.0,
                           ),
                           Text(
                             ' Anuj Pandey \n Owner',
                             style: TextStyle(
-                              fontSize: 18.0,
+                              fontSize: 17.0,
                             ),
                           ),
                           SizedBox(
@@ -98,7 +208,7 @@ class DescriptionScreen extends StatelessWidget {
                           Text(
                             '10 June, 2021',
                             style: TextStyle(
-                              fontSize: 18.0,
+                              fontSize: 17.0,
                             ),
                           ),
                         ],

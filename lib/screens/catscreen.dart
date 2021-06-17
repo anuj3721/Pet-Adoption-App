@@ -23,6 +23,7 @@ class _CatScreenState extends State<CatScreen> {
   List<String> breed = [];
   List<String> age = [];
   List<String> url = [];
+  List<String> city = [];
 
   @override
   void initState() {
@@ -49,6 +50,7 @@ class _CatScreenState extends State<CatScreen> {
                 phoneNumber.add(doc['Phone Number']);
                 description.add(doc['Description']);
                 url.add(doc['url']);
+                city.add(doc['City']);
               }
             });
           })
@@ -173,6 +175,7 @@ class _CatScreenState extends State<CatScreen> {
                                     gender: sex[index],
                                     imagePath: url[index],
                                     age: age[index],
+                                    city: city[index],
                                   ),
                                   onTap: () {
                                     Navigator.push(
@@ -185,7 +188,9 @@ class _CatScreenState extends State<CatScreen> {
                                             sex: sex[index],
                                             url: url[index],
                                             description: description[index],
-                                            age: age[index]),
+                                            age: age[index],
+                                            city: city[index],
+                                        ),
                                       ),
                                     );
                                   },
