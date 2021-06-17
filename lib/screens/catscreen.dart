@@ -166,12 +166,29 @@ class _CatScreenState extends State<CatScreen> {
                         itemBuilder: (context, index) {
                           return petNames.length == 0
                               ? null
-                              : PetCardNew(
-                                  petName: petNames[index],
-                                  breed: breed[index],
-                                  gender: sex[index],
-                                  imagePath: url[index],
-                                  age: age[index],
+                              : GestureDetector(
+                                  child: PetCardNew(
+                                    petName: petNames[index],
+                                    breed: breed[index],
+                                    gender: sex[index],
+                                    imagePath: url[index],
+                                    age: age[index],
+                                  ),
+                                  onTap: () {
+                                    Navigator.push(
+                                      context,
+                                      MaterialPageRoute(
+                                        builder: (context) => DescriptionScreen(
+                                            petNames: petNames[index],
+                                            address: address[index],
+                                            breed: breed[index],
+                                            sex: sex[index],
+                                            url: url[index],
+                                            description: description[index],
+                                            age: age[index]),
+                                      ),
+                                    );
+                                  },
                                 );
                         },
                       ),

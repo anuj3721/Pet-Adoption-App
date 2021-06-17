@@ -235,7 +235,8 @@ class _PostScreenState extends State<PostScreen> {
                           );
                           setState(() {
                             imageUrl = result;
-                            isUploaded = true;
+                            if(imageUrl != null)
+                              isUploaded = true;
                           });
                         },
                         child: !isUploaded

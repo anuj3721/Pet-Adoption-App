@@ -1,13 +1,26 @@
 import 'package:flutter/material.dart';
-import 'package:carousel_slider/carousel_slider.dart';
-
-final List<String> imgList = [
-  'images/sampleDog.jpg',
-  'images/sampleDog.jpg',
-  'images/sampleDog.jpg',
-];
+import 'package:photo_view/photo_view.dart';
+// import 'package:carousel_slider/carousel_slider.dart';
 
 class DescriptionScreen extends StatelessWidget {
+  String description;
+  int phoneNumber;
+  String email;
+  String petNames;
+  String sex;
+  String type;
+  String address;
+  String breed;
+  String url;
+  String age;
+  DescriptionScreen(
+      {this.description,
+      this.petNames,
+      this.sex,
+      this.address,
+      this.breed,
+      this.url,
+      this.age});
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -16,24 +29,29 @@ class DescriptionScreen extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
             Expanded(
-              flex: 3,
+              flex: 5,
               child: Stack(
                 fit: StackFit.expand,
                 children: [
                   Container(
                     alignment: Alignment.center,
                     // color: Colors.green[200],
-                    child: CarouselSlider(
-                      options: CarouselOptions(),
-                      items: imgList
-                          .map(
-                            (item) => Container(
-                              child: Center(
-                                child: Image.asset(item, fit: BoxFit.cover),
-                              ),
-                            ),
-                          )
-                          .toList(),
+                    // child: CarouselSlider(
+                    //   options: CarouselOptions(),
+                    //   items: imgList
+                    //       .map(
+                    //         (item) => Container(
+                    //           child: Center(
+                    //             child: Image.asset(item, fit: BoxFit.cover),
+                    //           ),
+                    //         ),
+                    //       )
+                    //       .toList(),
+                    // ),
+                    child: PhotoView(
+                        imageProvider: NetworkImage(url),
+                      customSize: MediaQuery.of(context).size,
+                      backgroundDecoration: BoxDecoration(color: Colors.white),
                     ),
                   ),
                   Positioned(
@@ -78,7 +96,7 @@ class DescriptionScreen extends StatelessWidget {
                             width: 65.0,
                           ),
                           Text(
-                            '26 April, 2021',
+                            '10 June, 2021',
                             style: TextStyle(
                               fontSize: 18.0,
                             ),
@@ -92,7 +110,7 @@ class DescriptionScreen extends StatelessWidget {
                         padding: const EdgeInsets.all(15.0),
                         child: Container(
                           child: Text(
-                            'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Maecenas porta libero purus, non tristique arcu scelerisque et. Pellentesque et eleifend tellus. Nunc aliquet dignissim rhoncus. Proin rhoncus molestie dolor et vehicula. In mattis tortor nec felis tempor pharetra. Morbi ac lorem gravida nisl eleifend porta a a erat. Aliquam erat volutpat. Nam imperdiet odio vel aliquam porta. Vestibulum mattis enim sit amet nunc auctor, vel condimentum enim sollicitudin. Ut in maximus orci. Integer dapibus odio vel bibendum ultricies. In hac habitasse platea dictumst. Suspendisse pharetra elit eu lectus maximus pellentesque.',
+                            description,
                             style: TextStyle(
                               fontSize: 16,
                             ),
@@ -111,47 +129,47 @@ class DescriptionScreen extends StatelessWidget {
   }
 }
 
-final List<Widget> imageSliders = imgList
-    .map(
-      (item) => Container(
-        child: Container(
-          margin: EdgeInsets.all(5.0),
-          child: ClipRRect(
-            borderRadius: BorderRadius.all(Radius.circular(5.0)),
-            child: Stack(
-              children: <Widget>[
-                Image.asset(item, fit: BoxFit.cover),
-                Positioned(
-                  bottom: 0.0,
-                  left: 0.0,
-                  right: 0.0,
-                  child: Container(
-                    decoration: BoxDecoration(
-                      gradient: LinearGradient(
-                        colors: [
-                          Color.fromARGB(200, 0, 0, 0),
-                          Color.fromARGB(0, 0, 0, 0)
-                        ],
-                        begin: Alignment.bottomCenter,
-                        end: Alignment.topCenter,
-                      ),
-                    ),
-                    padding:
-                        EdgeInsets.symmetric(vertical: 10.0, horizontal: 20.0),
-                    child: Text(
-                      'No. ${imgList.indexOf(item)} image',
-                      style: TextStyle(
-                        color: Colors.white,
-                        fontSize: 20.0,
-                        fontWeight: FontWeight.bold,
-                      ),
-                    ),
-                  ),
-                ),
-              ],
-            ),
-          ),
-        ),
-      ),
-    )
-    .toList();
+// final List<Widget> imageSliders = imgList
+//     .map(
+//       (item) => Container(
+//         child: Container(
+//           margin: EdgeInsets.all(5.0),
+//           child: ClipRRect(
+//             borderRadius: BorderRadius.all(Radius.circular(5.0)),
+//             child: Stack(
+//               children: <Widget>[
+//                 Image.asset(item, fit: BoxFit.cover),
+//                 Positioned(
+//                   bottom: 0.0,
+//                   left: 0.0,
+//                   right: 0.0,
+//                   child: Container(
+//                     decoration: BoxDecoration(
+//                       gradient: LinearGradient(
+//                         colors: [
+//                           Color.fromARGB(200, 0, 0, 0),
+//                           Color.fromARGB(0, 0, 0, 0)
+//                         ],
+//                         begin: Alignment.bottomCenter,
+//                         end: Alignment.topCenter,
+//                       ),
+//                     ),
+//                     padding:
+//                         EdgeInsets.symmetric(vertical: 10.0, horizontal: 20.0),
+//                     child: Text(
+//                       'No. ${imgList.indexOf(item)} image',
+//                       style: TextStyle(
+//                         color: Colors.white,
+//                         fontSize: 20.0,
+//                         fontWeight: FontWeight.bold,
+//                       ),
+//                     ),
+//                   ),
+//                 ),
+//               ],
+//             ),
+//           ),
+//         ),
+//       ),
+//     )
+//     .toList();
