@@ -95,7 +95,7 @@ class PetCardNew extends StatelessWidget {
                   ),
                 ),
                 Text(
-                  age + " Years",
+                  age,
                   textAlign: TextAlign.left,
                   style: TextStyle(
                     color: Colors.white,
