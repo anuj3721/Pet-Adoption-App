@@ -227,12 +227,24 @@ class _PostScreenState extends State<PostScreen> {
                       padding: EdgeInsets.symmetric(vertical: 10.0),
                       child: TextButton(
                         onPressed: () async {
-                          final result = await Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                              builder: (context) => ImageCapture(),
-                            ),
-                          );
+                          var result;
+                          if (imageUrl == null) {
+                            result = await Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) => ImageCapture(),
+                              ),
+                            );
+                          }
+                          else {
+                            ScaffoldMessenger.of(context).showSnackBar(
+                              SnackBar(
+                                content: Text('Image already uploaded',
+                                    textAlign: TextAlign.center),
+                                backgroundColor: Theme.of(context).errorColor,
+                              ),
+                            );
+                          }
                           setState(() {
                             imageUrl = result;
                             if(imageUrl != null)
