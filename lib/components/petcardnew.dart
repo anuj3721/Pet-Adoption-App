@@ -112,7 +112,7 @@ class PetCardNew extends StatelessWidget {
                       color: Colors.white,
                     ),
                     Text(
-                      ' Location: ' + city,
+                      ' ' + city,
                       style: TextStyle(
                         color: Colors.white,
                         fontWeight: FontWeight.w400,

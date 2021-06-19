@@ -183,14 +183,14 @@ class _DogScreenState extends State<DogScreen> {
                                       context,
                                       MaterialPageRoute(
                                         builder: (context) => DescriptionScreen(
-                                            petNames: petNames[index],
-                                            address: address[index],
-                                            breed: breed[index],
-                                            sex: sex[index],
-                                            url: url[index],
-                                            description: description[index],
-                                            age: age[index],
-                                            city: city[index],
+                                          petNames: petNames[index],
+                                          address: address[index],
+                                          breed: breed[index],
+                                          sex: sex[index],
+                                          url: url[index],
+                                          description: description[index],
+                                          age: age[index],
+                                          city: city[index],
                                         ),
                                       ),
                                     );

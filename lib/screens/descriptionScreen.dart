@@ -185,7 +185,7 @@ class DescriptionScreen extends StatelessWidget {
                       ),
                     ),
                     SizedBox(
-                      height: 15.0,
+                      height: 20.0,
                     ),
                     Expanded(
                       flex: 2,
