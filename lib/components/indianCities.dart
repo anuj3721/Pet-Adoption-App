@@ -145,6 +145,7 @@ class Cities {
     'Dadra Nagar Haveli',
     'Daman',
     'Diu',
+    'Delhi',
     'Central Delhi',
     'East Delhi',
     'New Delhi',

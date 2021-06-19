@@ -252,8 +252,7 @@ class _PostScreenState extends State<PostScreen> {
                                 builder: (context) => ImageCapture(),
                               ),
                             );
-                          }
-                          else if(isUploaded){
+                          } else if (isUploaded) {
                             ScaffoldMessenger.of(context).showSnackBar(
                               SnackBar(
                                 content: Text('Image already uploaded',
@@ -263,9 +262,8 @@ class _PostScreenState extends State<PostScreen> {
                             );
                           }
                           setState(() {
-                            if(imageUrl == null)
-                                imageUrl = result;
-                              isUploaded = true;
+                            if (imageUrl == null) imageUrl = result;
+                            isUploaded = true;
                           });
                         },
                         child: !isUploaded
@@ -493,7 +491,7 @@ class _AgeDropDownState extends State<AgeDropDown> {
   @override
   Widget build(BuildContext context) {
     return Container(
-      height: 70.0,
+      height: 60.0,
       padding: EdgeInsets.symmetric(horizontal: 10.0),
       margin: EdgeInsets.symmetric(vertical: 10.0),
       width: double.infinity,
