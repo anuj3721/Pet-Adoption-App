@@ -2,20 +2,22 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:photo_view/photo_view.dart';
+import 'package:url_launcher/url_launcher.dart';
 // import 'package:carousel_slider/carousel_slider.dart';
 
-class DescriptionScreen extends StatelessWidget {
+
+class DescriptionScreen extends StatefulWidget {
   String description;
   int phoneNumber;
-  String email;
   String petNames;
   String sex;
-  String type;
   String address;
   String breed;
   String url;
   String age;
   String city;
+  String email;
+  String type;
 
   DescriptionScreen({
     this.description,
@@ -26,220 +28,330 @@ class DescriptionScreen extends StatelessWidget {
     this.url,
     this.age,
     this.city,
+    this.phoneNumber,
   });
+
+  @override
+  _DescriptionScreenState createState() => _DescriptionScreenState();
+}
+
+class _DescriptionScreenState extends State<DescriptionScreen> {
+
+  bool isSaved = false;
+
   @override
   Widget build(BuildContext context) {
     return SafeArea(
       child: Scaffold(
-        body: Container(
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.stretch,
-            children: [
-              Expanded(
-                flex: 5,
-                child: Stack(
-                  fit: StackFit.expand,
-                  children: [
-                    Container(
-                      alignment: Alignment.center,
-                      // color: Colors.green[200],
-                      // child: CarouselSlider(
-                      //   options: CarouselOptions(),
-                      //   items: imgList
-                      //       .map(
-                      //         (item) => Container(
-                      //           child: Center(
-                      //             child: Image.asset(item, fit: BoxFit.cover),
-                      //           ),
-                      //         ),
-                      //       )
-                      //       .toList(),
-                      // ),
-                      child: PhotoView(
-                        imageProvider: NetworkImage(url),
-                        customSize: MediaQuery.of(context).size,
-                        backgroundDecoration:
-                            BoxDecoration(color: Colors.white),
+        backgroundColor: Colors.white,
+        body: Stack(
+          children: [
+            Positioned.fill(
+              child: Column(
+                children: [
+                  Expanded(
+                    child: Container(
+                      padding:
+                          EdgeInsets.symmetric(vertical: 60, horizontal: 30),
+                      child: Stack(
+                        children: [
+                          Align(
+                            alignment: Alignment.center,
+                            child: PhotoView(
+                              imageProvider: NetworkImage(widget.url),
+                              customSize: MediaQuery.of(context).size,
+                              backgroundDecoration:
+                                  BoxDecoration(color: Colors.white),
+                            ),
+                          ),
+                        ],
                       ),
                     ),
-                    Positioned(
-                      top: 15,
-                      left: 15,
-                      child: GestureDetector(
-                        onTap: () {
-                          Navigator.pop(context);
+                  ),
+                  Expanded(
+                    child: Container(
+                      color: Colors.white,
+                      child: Column(
+                        children: [
+                          SizedBox(
+                            height: 100,
+                          ),
+                          Container(
+                            margin: EdgeInsets.symmetric(
+                              horizontal: 20,
+                            ),
+                            child: Row(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                CircleAvatar(
+                                  backgroundImage: AssetImage('images/unknown_account.jpg'),
+                                ),
+                                SizedBox(
+                                  width: 10,
+                                ),
+                                Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    Text(
+                                      'Anuj Pandey',
+                                      style: TextStyle(
+                                          fontWeight: FontWeight.bold,
+                                          fontSize: 17),
+                                    ),
+                                    Text(
+                                      'Owner',
+                                      style: TextStyle(
+                                        color: Colors.black,
+                                        fontSize: 15,
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                                Expanded(child: Container()),
+                                Text(
+                                  '16 June, 2021',
+                                  style: TextStyle(
+                                    color: Colors.black,
+                                    fontSize: 15,
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                          SizedBox(
+                            height: 10,
+                          ),
+                          Container(
+                            margin: EdgeInsets.symmetric(
+                              horizontal: 20,
+                            ),
+                            child: Text(
+                              widget.description,
+                              style: TextStyle(
+                                color: Colors.black,
+                                fontSize: 17,
+                                height: 1.7,
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+            ),
+            Align(
+              alignment: Alignment.center,
+              child: Container(
+                height: 110,
+                padding: EdgeInsets.all(20),
+                margin: EdgeInsets.symmetric(
+                  horizontal: 20,
+                ),
+                decoration: BoxDecoration(
+                  color: Colors.white,
+                  boxShadow: [
+                    BoxShadow(
+                      color: Colors.black.withOpacity(0.25),
+                      blurRadius: 30,
+                      offset: Offset(0, 10),
+                    ),
+                  ],
+                  borderRadius: BorderRadius.circular(30),
+                ),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Text(
+                          widget.petNames,
+                          style: TextStyle(
+                            //   color: fadedBlack,
+                            fontSize: 20,
+                            fontWeight: FontWeight.w400,
+                          ),
+                        ),
+                        Row(
+                          children: [
+                            Text(
+                              widget.sex,
+                              style: TextStyle(
+                                fontSize: 16,
+                                fontWeight: FontWeight.w400,
+                              ),
+                            ),
+                            SizedBox(width: 10.0),
+                            Icon(
+                              widget.sex == 'female'
+                                  ? FontAwesomeIcons.venus
+                                  : FontAwesomeIcons.mars,
+                              size: 20,
+                              color: Colors.black54,
+                            ),
+                          ],
+                        )
+                      ],
+                    ),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Text(
+                          widget.breed,
+                          style: TextStyle(
+                            fontSize: 16,
+                            color: Colors.black,
+                            fontWeight: FontWeight.w400,
+                          ),
+                        ),
+                        Text(
+                          widget.age,
+                          style: TextStyle(
+                            fontSize: 16,
+                            color: Colors.black,
+                            fontWeight: FontWeight.w400,
+                          ),
+                        ),
+                      ],
+                    ),
+                    Row(
+                      children: [
+                        Icon(
+                          Icons.location_pin,
+                          size: 18,
+                          color: Colors.blueGrey,
+                        ),
+                        SizedBox(
+                          width: 5,
+                        ),
+                        Text(
+                          widget.address + ', ' + widget.city,
+                          style: TextStyle(
+                            fontSize: 16,
+                            color: Colors.black,
+                            fontWeight: FontWeight.w400,
+                          ),
+                        )
+                      ],
+                    )
+                  ],
+                ),
+              ),
+            ),
+            Align(
+              alignment: Alignment.bottomCenter,
+              child: Container(
+                height: 80,
+                decoration: BoxDecoration(
+                  color: Colors.grey[100],
+                  borderRadius: BorderRadius.only(
+                    topLeft: Radius.circular(30),
+                    topRight: Radius.circular(30),
+                  ),
+                ),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                  children: [
+                    Container(
+                      margin: EdgeInsets.symmetric(horizontal: 30),
+                      decoration: BoxDecoration(
+                        // color: Colors.blue,
+                        color: Color(0xFF416D6C),
+                        boxShadow: [
+                          BoxShadow(
+                            color: Colors.black.withOpacity(0.25),
+                            blurRadius: 10,
+                            offset: Offset(0, 10),
+                          ),
+                        ],
+                        borderRadius: BorderRadius.circular(20),
+                      ),
+                      child: IconButton(
+                        icon: Icon(Icons.favorite,
+                        size: 27,
+                          color: isSaved ? Colors.red : Colors.white,
+                        ),
+                        onPressed: () {
+                          setState(() {
+                            isSaved = !isSaved;
+                          });
                         },
-                        child: Icon(
-                          Icons.arrow_back,
-                          color: Colors.white,
-                          size: 20,
+                      ),
+                    ),
+                    Expanded(
+                      child: Container(
+                        height: 60,
+                        decoration: BoxDecoration(
+                          // color: Colors.blue,
+                          color: Color(0xFF416D6C),
+                          boxShadow: [
+                            BoxShadow(
+                              color: Colors.black.withOpacity(0.25),
+                              blurRadius: 30,
+                              offset: Offset(0, 10),
+                            ),
+                          ],
+                          borderRadius: BorderRadius.circular(20),
+                        ),
+                    //    color: Colors.blueAccent,
+                        margin: EdgeInsets.only(right: 60),
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            Text(
+                              '   Contact',
+                              style: TextStyle(fontSize: 25,color: Colors.white),
+                            ),
+                            Row(
+                              children: [
+                                ElevatedButton(
+                                  child: Icon(
+                                    Icons.message,
+                                    size: 20,
+                                    color: Colors.white,
+                                  ),
+                                  style: ElevatedButton.styleFrom(
+                                    shape: CircleBorder(),
+                                    primary: Colors.yellow.shade700,
+                                    onPrimary: Colors.red,
+                                  ),
+                                  onPressed: () async {
+                                    await canLaunch('sms:+91${widget.phoneNumber}')
+                                        ? await launch('sms:+91${widget.phoneNumber}')
+                                        : throw 'Could not launch';
+                                  },
+                                ),
+                                ElevatedButton(
+                                  child: Icon(
+                                    Icons.call,
+                                    size: 20,
+                                    color: Colors.white,
+                                  ),
+                                  style: ElevatedButton.styleFrom(
+                                    shape: CircleBorder(),
+                                    primary: Colors.green,
+                                    onPrimary: Colors.red,
+                                  ),
+                                  onPressed: () async {
+                                    await canLaunch('tel:+91${widget.phoneNumber}')
+                                        ? await launch('tel:+91${widget.phoneNumber}')
+                                        : throw 'Could not launch';
+                                  },
+                                ),
+                              ],
+                            ),
+                          ],
                         ),
                       ),
                     ),
                   ],
                 ),
               ),
-              Expanded(
-                flex: 4,
-                child: Container(
-                  color: Colors.white,
-                  child: Column(
-                    children: [
-                      SizedBox(
-                        height: 10.0,
-                      ),
-                      Align(
-                        alignment: Alignment.center,
-                        child: Container(
-                          height: 120,
-                          padding: EdgeInsets.all(20),
-                          margin: EdgeInsets.symmetric(
-                            horizontal: 20,
-                          ),
-                          decoration: BoxDecoration(
-                            color: Colors.white,
-                            boxShadow: [
-                              BoxShadow(
-                                color: Colors.black.withOpacity(0.3),
-                                blurRadius: 30,
-                                offset: Offset(0, 10),
-                              ),
-                            ],
-                            borderRadius: BorderRadius.circular(30),
-                          ),
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            children: [
-                              Row(
-                                mainAxisAlignment:
-                                    MainAxisAlignment.spaceBetween,
-                                children: [
-                                  Text(
-                                    petNames,
-                                    style: TextStyle(
-                                      //   color: fadedBlack,
-                                      fontSize: 20,
-                                      fontWeight: FontWeight.w400,
-                                    ),
-                                  ),
-                                  Row(
-                                    children: [
-                                      Text(
-                                        sex,
-                                        style: TextStyle(
-                                          fontSize: 16,
-                                          fontWeight: FontWeight.w400,
-                                        ),
-                                      ),
-                                      SizedBox(width: 10.0),
-                                      Icon(
-                                        sex == 'female'
-                                            ? FontAwesomeIcons.venus
-                                            : FontAwesomeIcons.mars,
-                                        size: 20,
-                                        color: Colors.black54,
-                                      ),
-                                    ],
-                                  )
-                                ],
-                              ),
-                              Row(
-                                mainAxisAlignment:
-                                    MainAxisAlignment.spaceBetween,
-                                children: [
-                                  Text(
-                                    breed,
-                                    style: TextStyle(
-                                      fontSize: 16,
-                                      color: Colors.black,
-                                      fontWeight: FontWeight.w400,
-                                    ),
-                                  ),
-                                  Text(
-                                    age,
-                                    style: TextStyle(
-                                      fontSize: 16,
-                                      color: Colors.black,
-                                      fontWeight: FontWeight.w400,
-                                    ),
-                                  ),
-                                ],
-                              ),
-                              Row(
-                                children: [
-                                  Icon(
-                                    Icons.location_pin,
-                                    size: 18,
-                                    color: Colors.blueGrey,
-                                  ),
-                                  SizedBox(
-                                    width: 5,
-                                  ),
-                                  Text(
-                                    address + ', ' + city,
-                                    style: TextStyle(
-                                      fontSize: 16,
-                                      color: Colors.black,
-                                      fontWeight: FontWeight.w400,
-                                    ),
-                                  )
-                                ],
-                              )
-                            ],
-                          ),
-                        ),
-                      ),
-                      SizedBox(
-                        height: 20.0,
-                      ),
-                      Expanded(
-                        flex: 2,
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceAround,
-                          children: [
-                            CircleAvatar(
-                              child: Image.asset('images/unknown_account.jpg'),
-                              radius: 25.0,
-                            ),
-                            Text(
-                              ' Anuj Pandey \n Owner',
-                              style: TextStyle(
-                                fontSize: 17.0,
-                              ),
-                            ),
-                            SizedBox(
-                              width: 65.0,
-                            ),
-                            Text(
-                              '10 June, 2021',
-                              style: TextStyle(
-                                fontSize: 17.0,
-                              ),
-                            ),
-                          ],
-                        ),
-                      ),
-                      Expanded(
-                        flex: 5,
-                        child: Padding(
-                          padding: const EdgeInsets.all(15.0),
-                          child: Container(
-                            child: Text(
-                              description,
-                              style: TextStyle(
-                                fontSize: 16,
-                              ),
-                            ),
-                          ),
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-              ),
-            ],
-          ),
+            ),
+          ],
         ),
       ),
     );

@@ -104,14 +104,32 @@ class _DogScreenState extends State<DogScreen> {
     return SafeArea(
       child: Scaffold(
         drawer: Drawer(
-          child: ListTile(
-            title: Text('LOGOUT'),
-            onTap: () {
-              if (_auth.currentUser != null) {
-                _auth.signOut();
-                Navigator.pop(context);
-              }
-            },
+          child: Column(
+            children: [
+              ListTile(
+                title: Text('LOGOUT'),
+                onTap: () {
+                  if (_auth.currentUser != null) {
+                    _auth.signOut();
+                    Navigator.pop(context);
+                  }
+                },
+              ),
+              ListTile(
+                title: Text(
+                  'My Posts',
+                  style: TextStyle(fontSize: 17),
+                ),
+                onTap: () {},
+              ),
+              ListTile(
+                title: Text(
+                  'Saved Posts',
+                  style: TextStyle(fontSize: 17),
+                ),
+                onTap: () {},
+              ),
+            ],
           ),
         ),
         key: _scaffoldKey,
@@ -232,6 +250,7 @@ class _DogScreenState extends State<DogScreen> {
                                           description: description[index],
                                           age: age[index],
                                           city: city[index],
+                                          phoneNumber: phoneNumber[index],
                                         ),
                                       ),
                                     );
