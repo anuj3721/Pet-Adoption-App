@@ -229,6 +229,7 @@ class _CatScreenState extends State<CatScreen> {
                                           description: description[index],
                                           age: age[index],
                                           city: city[index],
+                                          phoneNumber: phoneNumber[index],
                                         ),
                                       ),
                                     );

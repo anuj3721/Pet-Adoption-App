@@ -107,7 +107,9 @@ class _DogScreenState extends State<DogScreen> {
           child: Column(
             children: [
               ListTile(
-                title: Text('LOGOUT'),
+                title: Text(
+                  'LOGOUT',
+                ),
                 onTap: () {
                   if (_auth.currentUser != null) {
                     _auth.signOut();

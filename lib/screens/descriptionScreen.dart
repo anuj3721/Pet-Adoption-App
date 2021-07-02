@@ -5,7 +5,6 @@ import 'package:photo_view/photo_view.dart';
 import 'package:url_launcher/url_launcher.dart';
 // import 'package:carousel_slider/carousel_slider.dart';
 
-
 class DescriptionScreen extends StatefulWidget {
   String description;
   int phoneNumber;
@@ -36,7 +35,6 @@ class DescriptionScreen extends StatefulWidget {
 }
 
 class _DescriptionScreenState extends State<DescriptionScreen> {
-
   bool isSaved = false;
 
   @override
@@ -84,7 +82,8 @@ class _DescriptionScreenState extends State<DescriptionScreen> {
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
                                 CircleAvatar(
-                                  backgroundImage: AssetImage('images/unknown_account.jpg'),
+                                  backgroundImage:
+                                      AssetImage('images/unknown_account.jpg'),
                                 ),
                                 SizedBox(
                                   width: 10,
@@ -270,8 +269,9 @@ class _DescriptionScreenState extends State<DescriptionScreen> {
                         borderRadius: BorderRadius.circular(20),
                       ),
                       child: IconButton(
-                        icon: Icon(Icons.favorite,
-                        size: 27,
+                        icon: Icon(
+                          Icons.favorite,
+                          size: 27,
                           color: isSaved ? Colors.red : Colors.white,
                         ),
                         onPressed: () {
@@ -296,14 +296,15 @@ class _DescriptionScreenState extends State<DescriptionScreen> {
                           ],
                           borderRadius: BorderRadius.circular(20),
                         ),
-                    //    color: Colors.blueAccent,
+                        //    color: Colors.blueAccent,
                         margin: EdgeInsets.only(right: 60),
                         child: Row(
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
                             Text(
                               '   Contact',
-                              style: TextStyle(fontSize: 25,color: Colors.white),
+                              style:
+                                  TextStyle(fontSize: 25, color: Colors.white),
                             ),
                             Row(
                               children: [
@@ -319,8 +320,10 @@ class _DescriptionScreenState extends State<DescriptionScreen> {
                                     onPrimary: Colors.red,
                                   ),
                                   onPressed: () async {
-                                    await canLaunch('sms:+91${widget.phoneNumber}')
-                                        ? await launch('sms:+91${widget.phoneNumber}')
+                                    await canLaunch(
+                                            'sms:+91${widget.phoneNumber}')
+                                        ? await launch(
+                                            'sms:+91${widget.phoneNumber}')
                                         : throw 'Could not launch';
                                   },
                                 ),
@@ -336,8 +339,11 @@ class _DescriptionScreenState extends State<DescriptionScreen> {
                                     onPrimary: Colors.red,
                                   ),
                                   onPressed: () async {
-                                    await canLaunch('tel:+91${widget.phoneNumber}')
-                                        ? await launch('tel:+91${widget.phoneNumber}')
+                                    print(widget.phoneNumber);
+                                    await canLaunch(
+                                            'tel:+91${widget.phoneNumber}')
+                                        ? await launch(
+                                            'tel:+91${widget.phoneNumber}')
                                         : throw 'Could not launch';
                                   },
                                 ),
