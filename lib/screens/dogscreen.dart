@@ -30,6 +30,7 @@ class _DogScreenState extends State<DogScreen> {
   String _selectedCityValue;
   bool myPostsCalled =  false;
   int ind = 0;
+  // var uid;
 
   void cityCallback(newCityValue) {
     print(newCityValue);
@@ -49,6 +50,38 @@ class _DogScreenState extends State<DogScreen> {
       getData();
     });
   }
+  void clearData(){
+    setState(() {
+      description.clear();
+      phoneNumber.clear();
+      email.clear();
+      petNames.clear();
+      sex.clear();
+      type.clear();
+      address.clear();
+      breed.clear();
+      url.clear();
+      age.clear();
+      city.clear();
+    });
+  }
+
+  void myPostsCallback() {
+    setState(() {
+      description.clear();
+      phoneNumber.clear();
+      email.clear();
+      petNames.clear();
+      sex.clear();
+      type.clear();
+      address.clear();
+      breed.clear();
+      url.clear();
+      age.clear();
+      city.clear();
+      getMyData();
+    });
+  }
 
   @override
   void initState() {
@@ -57,7 +90,8 @@ class _DogScreenState extends State<DogScreen> {
     print('Init gets called');
     _auth = FirebaseAuth.instance;
     _pets = FirebaseFirestore.instance.collection('Pet Data');
-
+  //  print(_auth.currentUser.uid);
+  //  uid = _auth.currentUser.uid;
     getData();
     setState(() {});
   }
@@ -66,23 +100,9 @@ class _DogScreenState extends State<DogScreen> {
     await _pets.get().then((QuerySnapshot querySnapshot) => {
           querySnapshot.docs.forEach((doc) {
             setState(() {
+            //  print(_pets.doc().id);
               if (_selectedCityValue == null) {
-                if (doc['Type'] == 'Dog' && doc['Email'].contains(_auth.currentUser.email)) {
-                  // print(doc['Email'].contains(_auth.currentUser.email));
-                  petNames.add(doc['Pet Name']);
-                  sex.add(doc['Sex']);
-                  type.add(doc['Type']);
-                  address.add(doc['Address']);
-                  breed.add(doc['Breed']);
-                  age.add(doc['Age']);
-                  email.add(doc['Email']);
-                  phoneNumber.add(doc['Phone Number']);
-                  url.add(doc['url']);
-                  description.add(doc['Description']);
-                  city.add(doc['City']);
-                  myPostsCalled = false;
-                }
-                else if(doc['Type'] == 'Dog') {
+                if(doc['Type'] == 'Dog') {
                   petNames.add(doc['Pet Name']);
                   sex.add(doc['Sex']);
                   type.add(doc['Type']);
@@ -115,6 +135,45 @@ class _DogScreenState extends State<DogScreen> {
           })
         });
   }
+  void getMyData() async {
+    await _pets.get().then((QuerySnapshot querySnapshot) => {
+      querySnapshot.docs.forEach((doc) {
+        setState(() {
+          //  print(_pets.doc().id);
+          if (_selectedCityValue == null) {
+            if(doc['Type'] == 'Dog' && doc['Email'].contains(_auth.currentUser.email)) {
+              petNames.add(doc['Pet Name']);
+              sex.add(doc['Sex']);
+              type.add(doc['Type']);
+              address.add(doc['Address']);
+              breed.add(doc['Breed']);
+              age.add(doc['Age']);
+              email.add(doc['Email']);
+              phoneNumber.add(doc['Phone Number']);
+              url.add(doc['url']);
+              description.add(doc['Description']);
+              city.add(doc['City']);
+            }
+          } else {
+            if (doc['Type'] == 'Dog' &&
+                doc['City'].contains(_selectedCityValue)) {
+              petNames.add(doc['Pet Name']);
+              sex.add(doc['Sex']);
+              type.add(doc['Type']);
+              address.add(doc['Address']);
+              breed.add(doc['Breed']);
+              age.add(doc['Age']);
+              email.add(doc['Email']);
+              phoneNumber.add(doc['Phone Number']);
+              url.add(doc['url']);
+              description.add(doc['Description']);
+              city.add(doc['City']);
+            }
+          }
+        });
+      })
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -134,12 +193,25 @@ class _DogScreenState extends State<DogScreen> {
               ),
               ListTile(
                 title: Text(
+                  'Home Screen',
+                  style: TextStyle(fontSize: 17),
+                ),
+                onTap: () {
+                  setState(() {
+                    clearData();
+                    getData();
+                    Navigator.pop(context);
+                  });
+                },
+              ),
+              ListTile(
+                title: Text(
                   'My Posts',
                   style: TextStyle(fontSize: 17),
                 ),
                 onTap: () {
                   setState(() {
-                    myPostsCalled = true;
+                    myPostsCallback();
                     Navigator.pop(context);
                   });
                 },
