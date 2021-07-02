@@ -28,8 +28,9 @@ class _DogScreenState extends State<DogScreen> {
   List<String> age = [];
   List<String> city = [];
   String _selectedCityValue;
-  bool myPostsCalled =  false;
+  bool myPostsCalled = false;
   int ind = 0;
+  bool myPostsVisible = false;
   // var uid;
 
   void cityCallback(newCityValue) {
@@ -50,7 +51,8 @@ class _DogScreenState extends State<DogScreen> {
       getData();
     });
   }
-  void clearData(){
+
+  void clearData() {
     setState(() {
       description.clear();
       phoneNumber.clear();
@@ -90,8 +92,8 @@ class _DogScreenState extends State<DogScreen> {
     print('Init gets called');
     _auth = FirebaseAuth.instance;
     _pets = FirebaseFirestore.instance.collection('Pet Data');
-  //  print(_auth.currentUser.uid);
-  //  uid = _auth.currentUser.uid;
+    //  print(_auth.currentUser.uid);
+    //  uid = _auth.currentUser.uid;
     getData();
     setState(() {});
   }
@@ -100,9 +102,9 @@ class _DogScreenState extends State<DogScreen> {
     await _pets.get().then((QuerySnapshot querySnapshot) => {
           querySnapshot.docs.forEach((doc) {
             setState(() {
-            //  print(_pets.doc().id);
+              //  print(_pets.doc().id);
               if (_selectedCityValue == null) {
-                if(doc['Type'] == 'Dog') {
+                if (doc['Type'] == 'Dog') {
                   petNames.add(doc['Pet Name']);
                   sex.add(doc['Sex']);
                   type.add(doc['Type']);
@@ -135,44 +137,46 @@ class _DogScreenState extends State<DogScreen> {
           })
         });
   }
+
   void getMyData() async {
     await _pets.get().then((QuerySnapshot querySnapshot) => {
-      querySnapshot.docs.forEach((doc) {
-        setState(() {
-          //  print(_pets.doc().id);
-          if (_selectedCityValue == null) {
-            if(doc['Type'] == 'Dog' && doc['Email'].contains(_auth.currentUser.email)) {
-              petNames.add(doc['Pet Name']);
-              sex.add(doc['Sex']);
-              type.add(doc['Type']);
-              address.add(doc['Address']);
-              breed.add(doc['Breed']);
-              age.add(doc['Age']);
-              email.add(doc['Email']);
-              phoneNumber.add(doc['Phone Number']);
-              url.add(doc['url']);
-              description.add(doc['Description']);
-              city.add(doc['City']);
-            }
-          } else {
-            if (doc['Type'] == 'Dog' &&
-                doc['City'].contains(_selectedCityValue)) {
-              petNames.add(doc['Pet Name']);
-              sex.add(doc['Sex']);
-              type.add(doc['Type']);
-              address.add(doc['Address']);
-              breed.add(doc['Breed']);
-              age.add(doc['Age']);
-              email.add(doc['Email']);
-              phoneNumber.add(doc['Phone Number']);
-              url.add(doc['url']);
-              description.add(doc['Description']);
-              city.add(doc['City']);
-            }
-          }
+          querySnapshot.docs.forEach((doc) {
+            setState(() {
+              //  print(_pets.doc().id);
+              if (_selectedCityValue == null) {
+                if (doc['Type'] == 'Dog' &&
+                    doc['Email'].contains(_auth.currentUser.email)) {
+                  petNames.add(doc['Pet Name']);
+                  sex.add(doc['Sex']);
+                  type.add(doc['Type']);
+                  address.add(doc['Address']);
+                  breed.add(doc['Breed']);
+                  age.add(doc['Age']);
+                  email.add(doc['Email']);
+                  phoneNumber.add(doc['Phone Number']);
+                  url.add(doc['url']);
+                  description.add(doc['Description']);
+                  city.add(doc['City']);
+                }
+              } else {
+                if (doc['Type'] == 'Dog' &&
+                    doc['City'].contains(_selectedCityValue)) {
+                  petNames.add(doc['Pet Name']);
+                  sex.add(doc['Sex']);
+                  type.add(doc['Type']);
+                  address.add(doc['Address']);
+                  breed.add(doc['Breed']);
+                  age.add(doc['Age']);
+                  email.add(doc['Email']);
+                  phoneNumber.add(doc['Phone Number']);
+                  url.add(doc['url']);
+                  description.add(doc['Description']);
+                  city.add(doc['City']);
+                }
+              }
+            });
+          })
         });
-      })
-    });
   }
 
   @override
@@ -185,6 +189,7 @@ class _DogScreenState extends State<DogScreen> {
               ListTile(
                 title: Text(
                   'LOGOUT',
+                  style: TextStyle(fontSize: 17.0),
                 ),
                 onTap: () {
                   if (_auth.currentUser != null) {
@@ -193,38 +198,61 @@ class _DogScreenState extends State<DogScreen> {
                   }
                 },
               ),
-              ListTile(
-                title: Text(
-                  'Home Screen',
-                  style: TextStyle(fontSize: 17),
-                ),
-                onTap: () {
-                  setState(() {
-                    clearData();
-                    getData();
-                    Navigator.pop(context);
-                  });
+              SwitchListTile(
+                onChanged: (value) {
+                  myPostsVisible = value;
+                  if (value == false) {
+                    //all posts
+                    setState(() {
+                      clearData();
+                      getData();
+                      Navigator.pop(context);
+                    });
+                  } else {
+                    //my posts
+                    setState(() {
+                      myPostsCallback();
+                      Navigator.pop(context);
+                    });
+                  }
                 },
-              ),
-              ListTile(
+                value: myPostsVisible,
                 title: Text(
                   'My Posts',
-                  style: TextStyle(fontSize: 17),
+                  style: TextStyle(fontSize: 17.0),
                 ),
-                onTap: () {
-                  setState(() {
-                    myPostsCallback();
-                    Navigator.pop(context);
-                  });
-                },
               ),
+              // ListTile(
+              //   title: Text(
+              //     'Home Screen',
+              //     style: TextStyle(fontSize: 17),
+              //   ),
+              //   onTap: () {
+              //     setState(() {
+              //       clearData();
+              //       getData();
+              //       Navigator.pop(context);
+              //     });
+              //   },
+              // ),
+              // ListTile(
+              //   title: Text(
+              //     'My Posts',
+              //     style: TextStyle(fontSize: 17),
+              //   ),
+              //   onTap: () {
+              //     setState(() {
+              //       myPostsCallback();
+              //       Navigator.pop(context);
+              //     });
+              //   },
+              // ),
               ListTile(
                 title: Text(
                   'Saved Posts',
                   style: TextStyle(fontSize: 17),
                 ),
-                onTap: () {
-                },
+                onTap: () {},
               ),
             ],
           ),
@@ -249,7 +277,8 @@ class _DogScreenState extends State<DogScreen> {
                   Expanded(
                     flex: 6,
                     child: Container(
-                      child: Text('Pet Adoption',
+                      child: Text(
+                        'Pet Adoption',
                         textAlign: TextAlign.center,
                         style: TextStyle(
                           fontSize: 18,
@@ -280,8 +309,8 @@ class _DogScreenState extends State<DogScreen> {
                 //   ),
                 // ),
                 child: CitySearchDropdown(
-                      callback: cityCallback,
-                      selectedCity: _selectedCityValue,
+                  callback: cityCallback,
+                  selectedCity: _selectedCityValue,
                 ),
               ),
             ),
