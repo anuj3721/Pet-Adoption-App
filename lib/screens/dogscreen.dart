@@ -28,6 +28,9 @@ class _DogScreenState extends State<DogScreen> {
   List<String> age = [];
   List<String> city = [];
   String _selectedCityValue;
+  bool myPostsCalled =  false;
+  int ind = 0;
+  // var uid;
 
   void cityCallback(newCityValue) {
     print(newCityValue);
@@ -47,6 +50,38 @@ class _DogScreenState extends State<DogScreen> {
       getData();
     });
   }
+  void clearData(){
+    setState(() {
+      description.clear();
+      phoneNumber.clear();
+      email.clear();
+      petNames.clear();
+      sex.clear();
+      type.clear();
+      address.clear();
+      breed.clear();
+      url.clear();
+      age.clear();
+      city.clear();
+    });
+  }
+
+  void myPostsCallback() {
+    setState(() {
+      description.clear();
+      phoneNumber.clear();
+      email.clear();
+      petNames.clear();
+      sex.clear();
+      type.clear();
+      address.clear();
+      breed.clear();
+      url.clear();
+      age.clear();
+      city.clear();
+      getMyData();
+    });
+  }
 
   @override
   void initState() {
@@ -55,7 +90,8 @@ class _DogScreenState extends State<DogScreen> {
     print('Init gets called');
     _auth = FirebaseAuth.instance;
     _pets = FirebaseFirestore.instance.collection('Pet Data');
-
+  //  print(_auth.currentUser.uid);
+  //  uid = _auth.currentUser.uid;
     getData();
     setState(() {});
   }
@@ -64,8 +100,9 @@ class _DogScreenState extends State<DogScreen> {
     await _pets.get().then((QuerySnapshot querySnapshot) => {
           querySnapshot.docs.forEach((doc) {
             setState(() {
+            //  print(_pets.doc().id);
               if (_selectedCityValue == null) {
-                if (doc['Type'] == 'Dog') {
+                if(doc['Type'] == 'Dog') {
                   petNames.add(doc['Pet Name']);
                   sex.add(doc['Sex']);
                   type.add(doc['Type']);
@@ -98,6 +135,45 @@ class _DogScreenState extends State<DogScreen> {
           })
         });
   }
+  void getMyData() async {
+    await _pets.get().then((QuerySnapshot querySnapshot) => {
+      querySnapshot.docs.forEach((doc) {
+        setState(() {
+          //  print(_pets.doc().id);
+          if (_selectedCityValue == null) {
+            if(doc['Type'] == 'Dog' && doc['Email'].contains(_auth.currentUser.email)) {
+              petNames.add(doc['Pet Name']);
+              sex.add(doc['Sex']);
+              type.add(doc['Type']);
+              address.add(doc['Address']);
+              breed.add(doc['Breed']);
+              age.add(doc['Age']);
+              email.add(doc['Email']);
+              phoneNumber.add(doc['Phone Number']);
+              url.add(doc['url']);
+              description.add(doc['Description']);
+              city.add(doc['City']);
+            }
+          } else {
+            if (doc['Type'] == 'Dog' &&
+                doc['City'].contains(_selectedCityValue)) {
+              petNames.add(doc['Pet Name']);
+              sex.add(doc['Sex']);
+              type.add(doc['Type']);
+              address.add(doc['Address']);
+              breed.add(doc['Breed']);
+              age.add(doc['Age']);
+              email.add(doc['Email']);
+              phoneNumber.add(doc['Phone Number']);
+              url.add(doc['url']);
+              description.add(doc['Description']);
+              city.add(doc['City']);
+            }
+          }
+        });
+      })
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -119,17 +195,36 @@ class _DogScreenState extends State<DogScreen> {
               ),
               ListTile(
                 title: Text(
+                  'Home Screen',
+                  style: TextStyle(fontSize: 17),
+                ),
+                onTap: () {
+                  setState(() {
+                    clearData();
+                    getData();
+                    Navigator.pop(context);
+                  });
+                },
+              ),
+              ListTile(
+                title: Text(
                   'My Posts',
                   style: TextStyle(fontSize: 17),
                 ),
-                onTap: () {},
+                onTap: () {
+                  setState(() {
+                    myPostsCallback();
+                    Navigator.pop(context);
+                  });
+                },
               ),
               ListTile(
                 title: Text(
                   'Saved Posts',
                   style: TextStyle(fontSize: 17),
                 ),
-                onTap: () {},
+                onTap: () {
+                },
               ),
             ],
           ),
@@ -153,9 +248,14 @@ class _DogScreenState extends State<DogScreen> {
                   ),
                   Expanded(
                     flex: 6,
-                    child: CitySearchDropdown(
-                      callback: cityCallback,
-                      selectedCity: _selectedCityValue,
+                    child: Container(
+                      child: Text('Pet Adoption',
+                        textAlign: TextAlign.center,
+                        style: TextStyle(
+                          fontSize: 18,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
                     ),
                   ),
                   Expanded(
@@ -168,16 +268,20 @@ class _DogScreenState extends State<DogScreen> {
               ),
             ),
             Padding(
-              padding: EdgeInsets.symmetric(horizontal: 20.0, vertical: 10.0),
+              padding: EdgeInsets.symmetric(horizontal: 10.0, vertical: 10.0),
               child: Material(
-                elevation: 18,
+                elevation: 10,
                 shadowColor: Colors.black,
-                child: TextField(
-                  decoration: InputDecoration(
-                    hintText: 'Search by breed',
-                    fillColor: Colors.white,
-                    filled: true,
-                  ),
+                // child: TextField(
+                //   decoration: InputDecoration(
+                //     hintText: 'Search by breed',
+                //     fillColor: Colors.white,
+                //     filled: true,
+                //   ),
+                // ),
+                child: CitySearchDropdown(
+                      callback: cityCallback,
+                      selectedCity: _selectedCityValue,
                 ),
               ),
             ),
@@ -284,7 +388,7 @@ class CitySearchDropdown extends StatelessWidget {
     return Container(
       height: 70.0,
       padding: EdgeInsets.symmetric(horizontal: 10.0),
-      margin: EdgeInsets.symmetric(vertical: 10.0),
+      // margin: EdgeInsets.symmetric(vertical: 10.0),
       width: double.infinity,
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(10.0),
@@ -306,8 +410,8 @@ class CitySearchDropdown extends StatelessWidget {
             );
           }).toList(),
           value: selectedCity,
-          hint: "Choose your city",
-          searchHint: "Choose your city",
+          hint: "Search by city",
+          searchHint: "Search by city",
           onChanged: callback,
           isExpanded: true,
         ),

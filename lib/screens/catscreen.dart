@@ -101,14 +101,37 @@ class _CatScreenState extends State<CatScreen> {
     return SafeArea(
       child: new Scaffold(
         drawer: Drawer(
-          child: ListTile(
-            title: Text('LOGOUT'),
-            onTap: () {
-              if (_auth.currentUser != null) {
-                _auth.signOut();
-                Navigator.pop(context);
-              }
-            },
+          child: Column(
+            children: [
+              ListTile(
+                title: Text('LOGOUT'),
+                onTap: () {
+                  if (_auth.currentUser != null) {
+                    _auth.signOut();
+                    Navigator.pop(context);
+                  }
+                },
+              ),
+              ListTile(
+                title: Text(
+                  'My Posts',
+                  style: TextStyle(fontSize: 17),
+                ),
+                onTap: () {
+                  setState(() {
+                    Navigator.pop(context);
+                  });
+                },
+              ),
+              ListTile(
+                title: Text(
+                  'Saved Posts',
+                  style: TextStyle(fontSize: 17),
+                ),
+                onTap: () {
+                },
+              ),
+            ],
           ),
         ),
         key: _scaffoldKey,
@@ -130,9 +153,14 @@ class _CatScreenState extends State<CatScreen> {
                   ),
                   Expanded(
                     flex: 6,
-                    child: CitySearchDropdown(
-                      callback: cityCallback,
-                      selectedCity: _selectedCityValue,
+                    child: Container(
+                      child: Text('Pet Adoption',
+                        textAlign: TextAlign.center,
+                        style: TextStyle(
+                          fontSize: 18,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
                     ),
                   ),
                   Expanded(
@@ -147,14 +175,11 @@ class _CatScreenState extends State<CatScreen> {
             Padding(
               padding: EdgeInsets.symmetric(horizontal: 20.0, vertical: 10.0),
               child: Material(
-                elevation: 18,
+                elevation: 10,
                 shadowColor: Colors.black,
-                child: TextField(
-                  decoration: InputDecoration(
-                    hintText: 'Search by breed',
-                    fillColor: Colors.white,
-                    filled: true,
-                  ),
+                child: CitySearchDropdown(
+                  callback: cityCallback,
+                  selectedCity: _selectedCityValue,
                 ),
               ),
             ),
@@ -261,7 +286,7 @@ class CitySearchDropdown extends StatelessWidget {
     return Container(
       height: 70.0,
       padding: EdgeInsets.symmetric(horizontal: 10.0),
-      margin: EdgeInsets.symmetric(vertical: 10.0),
+      // margin: EdgeInsets.symmetric(vertical: 10.0),
       width: double.infinity,
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(10.0),
@@ -283,8 +308,8 @@ class CitySearchDropdown extends StatelessWidget {
             );
           }).toList(),
           value: selectedCity,
-          hint: "Choose your city",
-          searchHint: "Choose your city",
+          hint: "Search by city",
+          searchHint: "Search by city",
           onChanged: callback,
           isExpanded: true,
         ),
