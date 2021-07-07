@@ -16,6 +16,7 @@ class _DogScreenState extends State<DogScreen> {
 
   FirebaseAuth _auth;
   CollectionReference _pets;
+  CollectionReference _favorite;
   List<String> description = [];
   List<int> phoneNumber = [];
   List<String> email = [];
@@ -27,10 +28,14 @@ class _DogScreenState extends State<DogScreen> {
   List<String> url = [];
   List<String> age = [];
   List<String> city = [];
+  List<String> petIDs = [];
+  List<String> favoritePetIDs = [];
   String _selectedCityValue;
   bool myPostsCalled = false;
   int ind = 0;
   bool myPostsVisible = false;
+  bool favoritesVisible = false;
+  String userID;
   // var uid;
 
   void cityCallback(newCityValue) {
@@ -95,7 +100,23 @@ class _DogScreenState extends State<DogScreen> {
     //  print(_auth.currentUser.uid);
     //  uid = _auth.currentUser.uid;
     getData();
+
+    _favorite = FirebaseFirestore.instance.collection('User Data');
+    if (_auth.currentUser != null) {
+      getDocumentID();
+    }
     setState(() {});
+  }
+
+  void getDocumentID() {
+    _favorite.get().then((QuerySnapshot querySnapshot) => {
+          querySnapshot.docs.forEach((doc) {
+            if (doc['Email'] == _auth.currentUser.email) {
+              userID = doc.id;
+              print(userID);
+            }
+          })
+        });
   }
 
   void getData() async {
@@ -106,6 +127,7 @@ class _DogScreenState extends State<DogScreen> {
               if (_selectedCityValue == null) {
                 if (doc['Type'] == 'Dog') {
                   petNames.add(doc['Pet Name']);
+                  petIDs.add(doc.id);
                   sex.add(doc['Sex']);
                   type.add(doc['Type']);
                   address.add(doc['Address']);
@@ -121,6 +143,7 @@ class _DogScreenState extends State<DogScreen> {
                 if (doc['Type'] == 'Dog' &&
                     doc['City'].contains(_selectedCityValue)) {
                   petNames.add(doc['Pet Name']);
+                  petIDs.add(doc.id);
                   sex.add(doc['Sex']);
                   type.add(doc['Type']);
                   address.add(doc['Address']);
@@ -138,6 +161,41 @@ class _DogScreenState extends State<DogScreen> {
         });
   }
 
+  void savedPostsClicked() async {
+    clearData();
+    await _favorite
+        .doc(userID)
+        .collection('Favorite Pets')
+        .get()
+        .then((QuerySnapshot querySnapshot) => {
+              querySnapshot.docs.forEach((doc) {
+                favoritePetIDs.add(doc['Pet ID']);
+              })
+            });
+
+    for (int i = 0; i < favoritePetIDs.length; i++) {
+      var _document = FirebaseFirestore.instance
+          .collection('Pet Data')
+          .doc(favoritePetIDs[i]);
+      await _document.get().then((snapshot) => {
+            petNames.add(snapshot.data()['Pet Name']),
+            sex.add(snapshot.data()['Sex']),
+            petIDs.add(snapshot.id),
+            type.add(snapshot.data()['Type']),
+            address.add(snapshot.data()['Address']),
+            breed.add(snapshot.data()['Breed']),
+            age.add(snapshot.data()['Age']),
+            email.add(snapshot.data()['Email']),
+            phoneNumber.add(snapshot.data()['Phone Number']),
+            url.add(snapshot.data()['url']),
+            description.add(snapshot.data()['Description']),
+            city.add(snapshot.data()['City']),
+          });
+    }
+    Navigator.pop(context);
+    setState(() {});
+  }
+
   void getMyData() async {
     await _pets.get().then((QuerySnapshot querySnapshot) => {
           querySnapshot.docs.forEach((doc) {
@@ -148,6 +206,7 @@ class _DogScreenState extends State<DogScreen> {
                     doc['Email'].contains(_auth.currentUser.email)) {
                   petNames.add(doc['Pet Name']);
                   sex.add(doc['Sex']);
+                  petIDs.add(doc.id);
                   type.add(doc['Type']);
                   address.add(doc['Address']);
                   breed.add(doc['Breed']);
@@ -163,6 +222,7 @@ class _DogScreenState extends State<DogScreen> {
                     doc['City'].contains(_selectedCityValue)) {
                   petNames.add(doc['Pet Name']);
                   sex.add(doc['Sex']);
+                  petIDs.add(doc.id);
                   type.add(doc['Type']);
                   address.add(doc['Address']);
                   breed.add(doc['Breed']);
@@ -247,13 +307,35 @@ class _DogScreenState extends State<DogScreen> {
               //     });
               //   },
               // ),
-              ListTile(
+              SwitchListTile(
                 title: Text(
                   'Saved Posts',
-                  style: TextStyle(fontSize: 17),
+                  style: TextStyle(fontSize: 17.0),
                 ),
-                onTap: () {},
+                value: favoritesVisible,
+                onChanged: (value) {
+                  favoritesVisible = value;
+                  if (value == true) {
+                    setState(() {
+                      clearData();
+                      savedPostsClicked();
+                    });
+                  } else {
+                    setState(() {
+                      clearData();
+                      getData();
+                      Navigator.pop(context);
+                    });
+                  }
+                },
               ),
+              // ListTile(
+              //   title: Text(
+              //     'Saved Posts',
+              //     style: TextStyle(fontSize: 17),
+              //   ),
+              //   onTap: savedPostsClicked,
+              // ),
             ],
           ),
         ),
@@ -365,6 +447,7 @@ class _DogScreenState extends State<DogScreen> {
                               ? null
                               : GestureDetector(
                                   child: PetCardNew(
+                                    petId: petIDs[index],
                                     petName: petNames[index],
                                     breed: breed[index],
                                     gender: sex[index],
@@ -377,6 +460,7 @@ class _DogScreenState extends State<DogScreen> {
                                       context,
                                       MaterialPageRoute(
                                         builder: (context) => DescriptionScreen(
+                                          petID: petIDs[index],
                                           petNames: petNames[index],
                                           address: address[index],
                                           breed: breed[index],
@@ -386,6 +470,7 @@ class _DogScreenState extends State<DogScreen> {
                                           age: age[index],
                                           city: city[index],
                                           phoneNumber: phoneNumber[index],
+                                          userID: userID,
                                         ),
                                       ),
                                     );

@@ -1,3 +1,4 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
@@ -17,6 +18,8 @@ class DescriptionScreen extends StatefulWidget {
   String city;
   String email;
   String type;
+  String userID = '5D3vJINmW02wwSgyBOFj';
+  String petID;
 
   DescriptionScreen({
     this.description,
@@ -28,6 +31,8 @@ class DescriptionScreen extends StatefulWidget {
     this.age,
     this.city,
     this.phoneNumber,
+    this.userID,
+    this.petID,
   });
 
   @override
@@ -36,6 +41,18 @@ class DescriptionScreen extends StatefulWidget {
 
 class _DescriptionScreenState extends State<DescriptionScreen> {
   bool isSaved = false;
+  CollectionReference _reference;
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    print(widget.petID);
+    _reference = FirebaseFirestore.instance
+        .collection('User Data')
+        .doc(widget.userID)
+        .collection('Favorite Pets');
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -277,6 +294,9 @@ class _DescriptionScreenState extends State<DescriptionScreen> {
                         onPressed: () {
                           setState(() {
                             isSaved = !isSaved;
+                            _reference.add({
+                              'Pet ID': widget.petID,
+                            });
                           });
                         },
                       ),
