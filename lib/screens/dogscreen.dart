@@ -1,9 +1,11 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:pet_adoption_app/components/petcardnew.dart';
+import 'package:pet_adoption_app/screens/chatScreen.dart';
 import 'package:pet_adoption_app/screens/descriptionScreen.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:pet_adoption_app/components/indianCities.dart';
+import 'package:pet_adoption_app/screens/loginORregister.dart';
 import 'package:searchable_dropdown/searchable_dropdown.dart';
 
 class DogScreen extends StatefulWidget {
@@ -70,6 +72,8 @@ class _DogScreenState extends State<DogScreen> {
       url.clear();
       age.clear();
       city.clear();
+      petIDs.clear();
+      favoritePetIDs.clear();
     });
   }
 
@@ -162,7 +166,7 @@ class _DogScreenState extends State<DogScreen> {
   }
 
   void savedPostsClicked() async {
-    clearData();
+   // clearData();
     await _favorite
         .doc(userID)
         .collection('Favorite Pets')
@@ -257,6 +261,26 @@ class _DogScreenState extends State<DogScreen> {
                     Navigator.pop(context);
                   }
                 },
+              ),
+              Padding(
+                padding: EdgeInsets.only(right: 15.0),
+                child: ListTile(
+                  title: Text(
+                    'Community Chat',
+                    style: TextStyle(fontSize: 17.0),
+                  ),
+                  trailing: Icon(Icons.chat, size: 25,),
+                  onTap: () {
+                 //   Navigator.push(context, MaterialPageRoute(builder: (context) => ChatScreen()));
+                    if(_auth.currentUser != null) {
+                      Navigator.push(context,
+                          MaterialPageRoute(builder: (context) => ChatScreen()));
+                    }
+                    else {
+                      Navigator.push(context, MaterialPageRoute(builder: (context) => LoginOrRegister()));
+                    }
+                  },
+                ),
               ),
               SwitchListTile(
                 onChanged: (value) {
