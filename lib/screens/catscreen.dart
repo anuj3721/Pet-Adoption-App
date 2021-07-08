@@ -7,6 +7,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:pet_adoption_app/components/indianCities.dart';
 import 'package:pet_adoption_app/screens/loginORregister.dart';
 import 'package:searchable_dropdown/searchable_dropdown.dart';
+import 'package:pet_adoption_app/screens/profileScreen.dart';
 
 class CatScreen extends StatefulWidget {
   @override
@@ -40,6 +41,7 @@ class _CatScreenState extends State<CatScreen> {
   bool myPostsVisible = false;
   bool favoritesVisible = false;
   String userID;
+  String username;
   // var uid;
 
   void cityCallback(newCityValue) {
@@ -122,72 +124,70 @@ class _CatScreenState extends State<CatScreen> {
 
   void getDocumentID() {
     _favorite.get().then((QuerySnapshot querySnapshot) => {
-      querySnapshot.docs.forEach((doc) {
-        if (doc['Email'] == _auth.currentUser.email) {
-          userID = doc.id;
-          print(userID);
-        }
-      })
-    });
+          querySnapshot.docs.forEach((doc) {
+            if (doc['Email'] == _auth.currentUser.email) {
+              userID = doc.id;
+              username = doc['Name'];
+              print(userID);
+            }
+          })
+        });
   }
 
   void getUsernames() {
     _favorite.get().then((QuerySnapshot querySnapshot) => {
-      querySnapshot.docs.forEach((doc) {
-        for(int i=0;i<email.length;i++)
-        {
-          if(email[i] == doc['Email'])
-            usernames.add(doc['Name']);
-        }
-      })
-    });
+          querySnapshot.docs.forEach((doc) {
+            for (int i = 0; i < email.length; i++) {
+              if (email[i] == doc['Email']) usernames.add(doc['Name']);
+            }
+          })
+        });
   }
 
   void getData() async {
     await _pets.get().then((QuerySnapshot querySnapshot) => {
-      querySnapshot.docs.forEach((doc) {
-        setState(() {
-          //  print(_pets.doc().id);
-          if (_selectedCityValue == null) {
-            if (doc['Type'] == 'Cat') {
-              petNames.add(doc['Pet Name']);
-              petIDs.add(doc.id);
-              sex.add(doc['Sex']);
-              type.add(doc['Type']);
-              address.add(doc['Address']);
-              breed.add(doc['Breed']);
-              age.add(doc['Age']);
-              email.add(doc['Email']);
-              phoneNumber.add(doc['Phone Number']);
-              url.add(doc['url']);
-              description.add(doc['Description']);
-              city.add(doc['City']);
-              timestamps.add(doc['timestamp']);
-            }
-          } else {
-            if (doc['Type'] == 'Cat' &&
-                doc['City'].contains(_selectedCityValue)) {
-              petNames.add(doc['Pet Name']);
-              petIDs.add(doc.id);
-              sex.add(doc['Sex']);
-              type.add(doc['Type']);
-              address.add(doc['Address']);
-              breed.add(doc['Breed']);
-              age.add(doc['Age']);
-              email.add(doc['Email']);
-              phoneNumber.add(doc['Phone Number']);
-              url.add(doc['url']);
-              description.add(doc['Description']);
-              city.add(doc['City']);
-              timestamps.add(doc['timestamp']);
-            }
-          }
+          querySnapshot.docs.forEach((doc) {
+            setState(() {
+              //  print(_pets.doc().id);
+              if (_selectedCityValue == null) {
+                if (doc['Type'] == 'Cat') {
+                  petNames.add(doc['Pet Name']);
+                  petIDs.add(doc.id);
+                  sex.add(doc['Sex']);
+                  type.add(doc['Type']);
+                  address.add(doc['Address']);
+                  breed.add(doc['Breed']);
+                  age.add(doc['Age']);
+                  email.add(doc['Email']);
+                  phoneNumber.add(doc['Phone Number']);
+                  url.add(doc['url']);
+                  description.add(doc['Description']);
+                  city.add(doc['City']);
+                  timestamps.add(doc['timestamp']);
+                }
+              } else {
+                if (doc['Type'] == 'Cat' &&
+                    doc['City'].contains(_selectedCityValue)) {
+                  petNames.add(doc['Pet Name']);
+                  petIDs.add(doc.id);
+                  sex.add(doc['Sex']);
+                  type.add(doc['Type']);
+                  address.add(doc['Address']);
+                  breed.add(doc['Breed']);
+                  age.add(doc['Age']);
+                  email.add(doc['Email']);
+                  phoneNumber.add(doc['Phone Number']);
+                  url.add(doc['url']);
+                  description.add(doc['Description']);
+                  city.add(doc['City']);
+                  timestamps.add(doc['timestamp']);
+                }
+              }
+            });
+          })
         });
-      })
-    });
     getUsernames();
-    setState(() {
-    });
+    setState(() {});
   }
 
   void savedPostsClicked() async {
@@ -197,30 +197,30 @@ class _CatScreenState extends State<CatScreen> {
         .collection('Favorite Pets')
         .get()
         .then((QuerySnapshot querySnapshot) => {
-      querySnapshot.docs.forEach((doc) {
-        favoritePetIDs.add(doc['Pet ID']);
-      })
-    });
+              querySnapshot.docs.forEach((doc) {
+                favoritePetIDs.add(doc['Pet ID']);
+              })
+            });
 
     for (int i = 0; i < favoritePetIDs.length; i++) {
       var _document = FirebaseFirestore.instance
           .collection('Pet Data')
           .doc(favoritePetIDs[i]);
       await _document.get().then((snapshot) => {
-        petNames.add(snapshot.data()['Pet Name']),
-        sex.add(snapshot.data()['Sex']),
-        petIDs.add(snapshot.id),
-        type.add(snapshot.data()['Type']),
-        address.add(snapshot.data()['Address']),
-        breed.add(snapshot.data()['Breed']),
-        age.add(snapshot.data()['Age']),
-        email.add(snapshot.data()['Email']),
-        phoneNumber.add(snapshot.data()['Phone Number']),
-        url.add(snapshot.data()['url']),
-        description.add(snapshot.data()['Description']),
-        city.add(snapshot.data()['City']),
-        timestamps.add(snapshot.data()['timestamp']),
-      });
+            petNames.add(snapshot.data()['Pet Name']),
+            sex.add(snapshot.data()['Sex']),
+            petIDs.add(snapshot.id),
+            type.add(snapshot.data()['Type']),
+            address.add(snapshot.data()['Address']),
+            breed.add(snapshot.data()['Breed']),
+            age.add(snapshot.data()['Age']),
+            email.add(snapshot.data()['Email']),
+            phoneNumber.add(snapshot.data()['Phone Number']),
+            url.add(snapshot.data()['url']),
+            description.add(snapshot.data()['Description']),
+            city.add(snapshot.data()['City']),
+            timestamps.add(snapshot.data()['timestamp']),
+          });
     }
     getUsernames();
     setState(() {});
@@ -229,50 +229,49 @@ class _CatScreenState extends State<CatScreen> {
 
   void getMyData() async {
     await _pets.get().then((QuerySnapshot querySnapshot) => {
-      querySnapshot.docs.forEach((doc) {
-        setState(() {
-          //  print(_pets.doc().id);
-          if (_selectedCityValue == null) {
-            if (doc['Type'] == 'Cat' &&
-                doc['Email'].contains(_auth.currentUser.email)) {
-              petNames.add(doc['Pet Name']);
-              sex.add(doc['Sex']);
-              petIDs.add(doc.id);
-              type.add(doc['Type']);
-              address.add(doc['Address']);
-              breed.add(doc['Breed']);
-              age.add(doc['Age']);
-              email.add(doc['Email']);
-              phoneNumber.add(doc['Phone Number']);
-              url.add(doc['url']);
-              description.add(doc['Description']);
-              city.add(doc['City']);
-              timestamps.add(doc['timestamp']);
-            }
-          } else {
-            if (doc['Type'] == 'Cat' &&
-                doc['City'].contains(_selectedCityValue)) {
-              petNames.add(doc['Pet Name']);
-              sex.add(doc['Sex']);
-              petIDs.add(doc.id);
-              type.add(doc['Type']);
-              address.add(doc['Address']);
-              breed.add(doc['Breed']);
-              age.add(doc['Age']);
-              email.add(doc['Email']);
-              phoneNumber.add(doc['Phone Number']);
-              url.add(doc['url']);
-              description.add(doc['Description']);
-              city.add(doc['City']);
-              timestamps.add(doc['timestamp']);
-            }
-          }
+          querySnapshot.docs.forEach((doc) {
+            setState(() {
+              //  print(_pets.doc().id);
+              if (_selectedCityValue == null) {
+                if (doc['Type'] == 'Cat' &&
+                    doc['Email'].contains(_auth.currentUser.email)) {
+                  petNames.add(doc['Pet Name']);
+                  sex.add(doc['Sex']);
+                  petIDs.add(doc.id);
+                  type.add(doc['Type']);
+                  address.add(doc['Address']);
+                  breed.add(doc['Breed']);
+                  age.add(doc['Age']);
+                  email.add(doc['Email']);
+                  phoneNumber.add(doc['Phone Number']);
+                  url.add(doc['url']);
+                  description.add(doc['Description']);
+                  city.add(doc['City']);
+                  timestamps.add(doc['timestamp']);
+                }
+              } else {
+                if (doc['Type'] == 'Cat' &&
+                    doc['City'].contains(_selectedCityValue)) {
+                  petNames.add(doc['Pet Name']);
+                  sex.add(doc['Sex']);
+                  petIDs.add(doc.id);
+                  type.add(doc['Type']);
+                  address.add(doc['Address']);
+                  breed.add(doc['Breed']);
+                  age.add(doc['Age']);
+                  email.add(doc['Email']);
+                  phoneNumber.add(doc['Phone Number']);
+                  url.add(doc['url']);
+                  description.add(doc['Description']);
+                  city.add(doc['City']);
+                  timestamps.add(doc['timestamp']);
+                }
+              }
+            });
+          })
         });
-      })
-    });
     getUsernames();
-    setState(() {
-    });
+    setState(() {});
   }
 
   @override
@@ -290,6 +289,9 @@ class _CatScreenState extends State<CatScreen> {
                 onTap: () {
                   if (_auth.currentUser != null) {
                     _auth.signOut();
+                    setState(() {
+                      username = null;
+                    });
                     Navigator.pop(context);
                   }
                 },
@@ -301,15 +303,22 @@ class _CatScreenState extends State<CatScreen> {
                     'Community Chat',
                     style: TextStyle(fontSize: 17.0),
                   ),
-                  trailing: Icon(Icons.chat, size: 25,),
+                  trailing: Icon(
+                    Icons.chat,
+                    size: 25,
+                  ),
                   onTap: () {
                     //   Navigator.push(context, MaterialPageRoute(builder: (context) => ChatScreen()));
-                    if(_auth.currentUser != null) {
-                      Navigator.push(context,
-                          MaterialPageRoute(builder: (context) => ChatScreen()));
-                    }
-                    else {
-                      Navigator.push(context, MaterialPageRoute(builder: (context) => LoginOrRegister()));
+                    if (_auth.currentUser != null) {
+                      Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                              builder: (context) => ChatScreen()));
+                    } else {
+                      Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                              builder: (context) => LoginOrRegister()));
                     }
                   },
                 ),
@@ -406,7 +415,7 @@ class _CatScreenState extends State<CatScreen> {
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
                   Expanded(
-                    flex: 1,
+                    flex: 2,
                     child: IconButton(
                       icon: Icon(Icons.menu),
                       onPressed: () {
@@ -428,9 +437,29 @@ class _CatScreenState extends State<CatScreen> {
                     ),
                   ),
                   Expanded(
-                    flex: 1,
-                    child: CircleAvatar(
-                      child: Image.asset('images/unknown_account.jpg'),
+                    flex: 2,
+                    child: Column(
+                      children: [
+                        IconButton(
+                          onPressed: () {
+                            if (_auth.currentUser != null) {
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                  builder: (context) => ProfilePage(
+                                    username: username,
+                                  ),
+                                ),
+                              );
+                            }
+                          },
+                          icon: Icon(Icons.person_rounded),
+                        ),
+                        Text(
+                          username != null ? username : "",
+                          textAlign: TextAlign.center,
+                        ),
+                      ],
                     ),
                   ),
                 ],
@@ -504,38 +533,38 @@ class _CatScreenState extends State<CatScreen> {
                           return petNames.length == 0
                               ? null
                               : GestureDetector(
-                            child: PetCardNew(
-                              petId: petIDs[index],
-                              petName: petNames[index],
-                              breed: breed[index],
-                              gender: sex[index],
-                              imagePath: url[index],
-                              age: age[index],
-                              city: city[index],
-                            ),
-                            onTap: () {
-                              Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                  builder: (context) => DescriptionScreen(
-                                    petID: petIDs[index],
-                                    petNames: petNames[index],
-                                    address: address[index],
+                                  child: PetCardNew(
+                                    petId: petIDs[index],
+                                    petName: petNames[index],
                                     breed: breed[index],
-                                    sex: sex[index],
-                                    url: url[index],
-                                    description: description[index],
+                                    gender: sex[index],
+                                    imagePath: url[index],
                                     age: age[index],
                                     city: city[index],
-                                    phoneNumber: phoneNumber[index],
-                                    userID: userID,
-                                    userName: usernames[index],
-                                    timestamp: timestamps[index],
                                   ),
-                                ),
-                              );
-                            },
-                          );
+                                  onTap: () {
+                                    Navigator.push(
+                                      context,
+                                      MaterialPageRoute(
+                                        builder: (context) => DescriptionScreen(
+                                          petID: petIDs[index],
+                                          petNames: petNames[index],
+                                          address: address[index],
+                                          breed: breed[index],
+                                          sex: sex[index],
+                                          url: url[index],
+                                          description: description[index],
+                                          age: age[index],
+                                          city: city[index],
+                                          phoneNumber: phoneNumber[index],
+                                          userID: userID,
+                                          userName: usernames[index],
+                                          timestamp: timestamps[index],
+                                        ),
+                                      ),
+                                    );
+                                  },
+                                );
                         },
                       ),
                     ],
