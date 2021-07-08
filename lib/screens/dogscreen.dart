@@ -32,6 +32,8 @@ class _DogScreenState extends State<DogScreen> {
   List<String> city = [];
   List<String> petIDs = [];
   List<String> favoritePetIDs = [];
+  List<String> usernames = [];
+  List<Timestamp> timestamps = [];
   String _selectedCityValue;
   bool myPostsCalled = false;
   int ind = 0;
@@ -55,6 +57,8 @@ class _DogScreenState extends State<DogScreen> {
       url.clear();
       age.clear();
       city.clear();
+      timestamps.clear();
+      usernames.clear();
       getData();
     });
   }
@@ -74,6 +78,8 @@ class _DogScreenState extends State<DogScreen> {
       city.clear();
       petIDs.clear();
       favoritePetIDs.clear();
+      usernames.clear();
+      timestamps.clear();
     });
   }
 
@@ -90,6 +96,8 @@ class _DogScreenState extends State<DogScreen> {
       url.clear();
       age.clear();
       city.clear();
+      timestamps.clear();
+      usernames.clear();
       getMyData();
     });
   }
@@ -103,12 +111,12 @@ class _DogScreenState extends State<DogScreen> {
     _pets = FirebaseFirestore.instance.collection('Pet Data');
     //  print(_auth.currentUser.uid);
     //  uid = _auth.currentUser.uid;
-    getData();
-
     _favorite = FirebaseFirestore.instance.collection('User Data');
     if (_auth.currentUser != null) {
       getDocumentID();
     }
+    getData();
+   // getUsernames();
     setState(() {});
   }
 
@@ -121,6 +129,18 @@ class _DogScreenState extends State<DogScreen> {
             }
           })
         });
+  }
+
+  void getUsernames() {
+    _favorite.get().then((QuerySnapshot querySnapshot) => {
+      querySnapshot.docs.forEach((doc) {
+        for(int i=0;i<email.length;i++)
+        {
+          if(email[i] == doc['Email'])
+            usernames.add(doc['Name']);
+        }
+      })
+    });
   }
 
   void getData() async {
@@ -142,6 +162,7 @@ class _DogScreenState extends State<DogScreen> {
                   url.add(doc['url']);
                   description.add(doc['Description']);
                   city.add(doc['City']);
+                  timestamps.add(doc['timestamp']);
                 }
               } else {
                 if (doc['Type'] == 'Dog' &&
@@ -158,11 +179,15 @@ class _DogScreenState extends State<DogScreen> {
                   url.add(doc['url']);
                   description.add(doc['Description']);
                   city.add(doc['City']);
+                  timestamps.add(doc['timestamp']);
                 }
               }
             });
           })
         });
+    getUsernames();
+    setState(() {
+    });
   }
 
   void savedPostsClicked() async {
@@ -194,10 +219,12 @@ class _DogScreenState extends State<DogScreen> {
             url.add(snapshot.data()['url']),
             description.add(snapshot.data()['Description']),
             city.add(snapshot.data()['City']),
+            timestamps.add(snapshot.data()['timestamp']),
           });
     }
-    Navigator.pop(context);
+    getUsernames();
     setState(() {});
+    Navigator.pop(context);
   }
 
   void getMyData() async {
@@ -220,6 +247,7 @@ class _DogScreenState extends State<DogScreen> {
                   url.add(doc['url']);
                   description.add(doc['Description']);
                   city.add(doc['City']);
+                  timestamps.add(doc['timestamp']);
                 }
               } else {
                 if (doc['Type'] == 'Dog' &&
@@ -236,11 +264,15 @@ class _DogScreenState extends State<DogScreen> {
                   url.add(doc['url']);
                   description.add(doc['Description']);
                   city.add(doc['City']);
+                  timestamps.add(doc['timestamp']);
                 }
               }
             });
           })
         });
+    getUsernames();
+    setState(() {
+    });
   }
 
   @override
@@ -290,6 +322,7 @@ class _DogScreenState extends State<DogScreen> {
                     setState(() {
                       clearData();
                       getData();
+                    //  getUsernames();
                       Navigator.pop(context);
                     });
                   } else {
@@ -348,6 +381,7 @@ class _DogScreenState extends State<DogScreen> {
                     setState(() {
                       clearData();
                       getData();
+                  //    getUsernames();
                       Navigator.pop(context);
                     });
                   }
@@ -495,6 +529,8 @@ class _DogScreenState extends State<DogScreen> {
                                           city: city[index],
                                           phoneNumber: phoneNumber[index],
                                           userID: userID,
+                                          userName: usernames[index],
+                                          timestamp: timestamps[index],
                                         ),
                                       ),
                                     );

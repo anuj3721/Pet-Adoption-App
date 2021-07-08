@@ -28,7 +28,7 @@ class _ChatScreenState extends State<ChatScreen> {
     await _userName.get().then((QuerySnapshot querySnapshot) => {
       querySnapshot.docs.forEach((doc) {
         setState(() {
-            if (doc['Email'].contains(_auth.currentUser.email)) {
+            if (doc['Email'] == _auth.currentUser.email) {
               name = doc['Name'];
             }
         });

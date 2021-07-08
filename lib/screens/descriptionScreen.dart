@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:photo_view/photo_view.dart';
 import 'package:url_launcher/url_launcher.dart';
+import 'package:intl/intl.dart';
 // import 'package:carousel_slider/carousel_slider.dart';
 
 class DescriptionScreen extends StatefulWidget {
@@ -20,6 +21,8 @@ class DescriptionScreen extends StatefulWidget {
   String type;
   String userID = '5D3vJINmW02wwSgyBOFj';
   String petID;
+  String userName;
+  Timestamp timestamp;
 
   DescriptionScreen({
     this.description,
@@ -33,6 +36,8 @@ class DescriptionScreen extends StatefulWidget {
     this.phoneNumber,
     this.userID,
     this.petID,
+    this.userName,
+    this.timestamp,
   });
 
   @override
@@ -109,7 +114,7 @@ class _DescriptionScreenState extends State<DescriptionScreen> {
                                   crossAxisAlignment: CrossAxisAlignment.start,
                                   children: [
                                     Text(
-                                      'Anuj Pandey',
+                                      widget.userName,
                                       style: TextStyle(
                                           fontWeight: FontWeight.bold,
                                           fontSize: 17),
@@ -125,7 +130,7 @@ class _DescriptionScreenState extends State<DescriptionScreen> {
                                 ),
                                 Expanded(child: Container()),
                                 Text(
-                                  '16 June, 2021',
+                                    DateFormat.yMMMd().format(widget.timestamp.toDate()),
                                   style: TextStyle(
                                     color: Colors.black,
                                     fontSize: 15,
