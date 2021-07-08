@@ -1,9 +1,11 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:pet_adoption_app/components/petcardnew.dart';
+import 'package:pet_adoption_app/screens/chatScreen.dart';
 import 'package:pet_adoption_app/screens/descriptionScreen.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:pet_adoption_app/components/indianCities.dart';
+import 'package:pet_adoption_app/screens/loginORregister.dart';
 import 'package:searchable_dropdown/searchable_dropdown.dart';
 
 class DogScreen extends StatefulWidget {
@@ -16,6 +18,7 @@ class _DogScreenState extends State<DogScreen> {
 
   FirebaseAuth _auth;
   CollectionReference _pets;
+  CollectionReference _favorite;
   List<String> description = [];
   List<int> phoneNumber = [];
   List<String> email = [];
@@ -27,10 +30,16 @@ class _DogScreenState extends State<DogScreen> {
   List<String> url = [];
   List<String> age = [];
   List<String> city = [];
+  List<String> petIDs = [];
+  List<String> favoritePetIDs = [];
+  List<String> usernames = [];
+  List<Timestamp> timestamps = [];
   String _selectedCityValue;
   bool myPostsCalled = false;
   int ind = 0;
   bool myPostsVisible = false;
+  bool favoritesVisible = false;
+  String userID;
   // var uid;
 
   void cityCallback(newCityValue) {
@@ -48,6 +57,8 @@ class _DogScreenState extends State<DogScreen> {
       url.clear();
       age.clear();
       city.clear();
+      timestamps.clear();
+      usernames.clear();
       getData();
     });
   }
@@ -65,6 +76,10 @@ class _DogScreenState extends State<DogScreen> {
       url.clear();
       age.clear();
       city.clear();
+      petIDs.clear();
+      favoritePetIDs.clear();
+      usernames.clear();
+      timestamps.clear();
     });
   }
 
@@ -81,6 +96,8 @@ class _DogScreenState extends State<DogScreen> {
       url.clear();
       age.clear();
       city.clear();
+      timestamps.clear();
+      usernames.clear();
       getMyData();
     });
   }
@@ -94,8 +111,36 @@ class _DogScreenState extends State<DogScreen> {
     _pets = FirebaseFirestore.instance.collection('Pet Data');
     //  print(_auth.currentUser.uid);
     //  uid = _auth.currentUser.uid;
+    _favorite = FirebaseFirestore.instance.collection('User Data');
+    if (_auth.currentUser != null) {
+      getDocumentID();
+    }
     getData();
+   // getUsernames();
     setState(() {});
+  }
+
+  void getDocumentID() {
+    _favorite.get().then((QuerySnapshot querySnapshot) => {
+          querySnapshot.docs.forEach((doc) {
+            if (doc['Email'] == _auth.currentUser.email) {
+              userID = doc.id;
+              print(userID);
+            }
+          })
+        });
+  }
+
+  void getUsernames() {
+    _favorite.get().then((QuerySnapshot querySnapshot) => {
+      querySnapshot.docs.forEach((doc) {
+        for(int i=0;i<email.length;i++)
+        {
+          if(email[i] == doc['Email'])
+            usernames.add(doc['Name']);
+        }
+      })
+    });
   }
 
   void getData() async {
@@ -106,6 +151,7 @@ class _DogScreenState extends State<DogScreen> {
               if (_selectedCityValue == null) {
                 if (doc['Type'] == 'Dog') {
                   petNames.add(doc['Pet Name']);
+                  petIDs.add(doc.id);
                   sex.add(doc['Sex']);
                   type.add(doc['Type']);
                   address.add(doc['Address']);
@@ -116,11 +162,13 @@ class _DogScreenState extends State<DogScreen> {
                   url.add(doc['url']);
                   description.add(doc['Description']);
                   city.add(doc['City']);
+                  timestamps.add(doc['timestamp']);
                 }
               } else {
                 if (doc['Type'] == 'Dog' &&
                     doc['City'].contains(_selectedCityValue)) {
                   petNames.add(doc['Pet Name']);
+                  petIDs.add(doc.id);
                   sex.add(doc['Sex']);
                   type.add(doc['Type']);
                   address.add(doc['Address']);
@@ -131,11 +179,52 @@ class _DogScreenState extends State<DogScreen> {
                   url.add(doc['url']);
                   description.add(doc['Description']);
                   city.add(doc['City']);
+                  timestamps.add(doc['timestamp']);
                 }
               }
             });
           })
         });
+    getUsernames();
+    setState(() {
+    });
+  }
+
+  void savedPostsClicked() async {
+   // clearData();
+    await _favorite
+        .doc(userID)
+        .collection('Favorite Pets')
+        .get()
+        .then((QuerySnapshot querySnapshot) => {
+              querySnapshot.docs.forEach((doc) {
+                favoritePetIDs.add(doc['Pet ID']);
+              })
+            });
+
+    for (int i = 0; i < favoritePetIDs.length; i++) {
+      var _document = FirebaseFirestore.instance
+          .collection('Pet Data')
+          .doc(favoritePetIDs[i]);
+      await _document.get().then((snapshot) => {
+            petNames.add(snapshot.data()['Pet Name']),
+            sex.add(snapshot.data()['Sex']),
+            petIDs.add(snapshot.id),
+            type.add(snapshot.data()['Type']),
+            address.add(snapshot.data()['Address']),
+            breed.add(snapshot.data()['Breed']),
+            age.add(snapshot.data()['Age']),
+            email.add(snapshot.data()['Email']),
+            phoneNumber.add(snapshot.data()['Phone Number']),
+            url.add(snapshot.data()['url']),
+            description.add(snapshot.data()['Description']),
+            city.add(snapshot.data()['City']),
+            timestamps.add(snapshot.data()['timestamp']),
+          });
+    }
+    getUsernames();
+    setState(() {});
+    Navigator.pop(context);
   }
 
   void getMyData() async {
@@ -148,6 +237,7 @@ class _DogScreenState extends State<DogScreen> {
                     doc['Email'].contains(_auth.currentUser.email)) {
                   petNames.add(doc['Pet Name']);
                   sex.add(doc['Sex']);
+                  petIDs.add(doc.id);
                   type.add(doc['Type']);
                   address.add(doc['Address']);
                   breed.add(doc['Breed']);
@@ -157,12 +247,14 @@ class _DogScreenState extends State<DogScreen> {
                   url.add(doc['url']);
                   description.add(doc['Description']);
                   city.add(doc['City']);
+                  timestamps.add(doc['timestamp']);
                 }
               } else {
                 if (doc['Type'] == 'Dog' &&
                     doc['City'].contains(_selectedCityValue)) {
                   petNames.add(doc['Pet Name']);
                   sex.add(doc['Sex']);
+                  petIDs.add(doc.id);
                   type.add(doc['Type']);
                   address.add(doc['Address']);
                   breed.add(doc['Breed']);
@@ -172,11 +264,15 @@ class _DogScreenState extends State<DogScreen> {
                   url.add(doc['url']);
                   description.add(doc['Description']);
                   city.add(doc['City']);
+                  timestamps.add(doc['timestamp']);
                 }
               }
             });
           })
         });
+    getUsernames();
+    setState(() {
+    });
   }
 
   @override
@@ -198,6 +294,26 @@ class _DogScreenState extends State<DogScreen> {
                   }
                 },
               ),
+              Padding(
+                padding: EdgeInsets.only(right: 15.0),
+                child: ListTile(
+                  title: Text(
+                    'Community Chat',
+                    style: TextStyle(fontSize: 17.0),
+                  ),
+                  trailing: Icon(Icons.chat, size: 25,),
+                  onTap: () {
+                 //   Navigator.push(context, MaterialPageRoute(builder: (context) => ChatScreen()));
+                    if(_auth.currentUser != null) {
+                      Navigator.push(context,
+                          MaterialPageRoute(builder: (context) => ChatScreen()));
+                    }
+                    else {
+                      Navigator.push(context, MaterialPageRoute(builder: (context) => LoginOrRegister()));
+                    }
+                  },
+                ),
+              ),
               SwitchListTile(
                 onChanged: (value) {
                   myPostsVisible = value;
@@ -206,6 +322,7 @@ class _DogScreenState extends State<DogScreen> {
                     setState(() {
                       clearData();
                       getData();
+                    //  getUsernames();
                       Navigator.pop(context);
                     });
                   } else {
@@ -247,13 +364,36 @@ class _DogScreenState extends State<DogScreen> {
               //     });
               //   },
               // ),
-              ListTile(
+              SwitchListTile(
                 title: Text(
                   'Saved Posts',
-                  style: TextStyle(fontSize: 17),
+                  style: TextStyle(fontSize: 17.0),
                 ),
-                onTap: () {},
+                value: favoritesVisible,
+                onChanged: (value) {
+                  favoritesVisible = value;
+                  if (value == true) {
+                    setState(() {
+                      clearData();
+                      savedPostsClicked();
+                    });
+                  } else {
+                    setState(() {
+                      clearData();
+                      getData();
+                  //    getUsernames();
+                      Navigator.pop(context);
+                    });
+                  }
+                },
               ),
+              // ListTile(
+              //   title: Text(
+              //     'Saved Posts',
+              //     style: TextStyle(fontSize: 17),
+              //   ),
+              //   onTap: savedPostsClicked,
+              // ),
             ],
           ),
         ),
@@ -365,6 +505,7 @@ class _DogScreenState extends State<DogScreen> {
                               ? null
                               : GestureDetector(
                                   child: PetCardNew(
+                                    petId: petIDs[index],
                                     petName: petNames[index],
                                     breed: breed[index],
                                     gender: sex[index],
@@ -377,6 +518,7 @@ class _DogScreenState extends State<DogScreen> {
                                       context,
                                       MaterialPageRoute(
                                         builder: (context) => DescriptionScreen(
+                                          petID: petIDs[index],
                                           petNames: petNames[index],
                                           address: address[index],
                                           breed: breed[index],
@@ -386,6 +528,9 @@ class _DogScreenState extends State<DogScreen> {
                                           age: age[index],
                                           city: city[index],
                                           phoneNumber: phoneNumber[index],
+                                          userID: userID,
+                                          userName: usernames[index],
+                                          timestamp: timestamps[index],
                                         ),
                                       ),
                                     );
