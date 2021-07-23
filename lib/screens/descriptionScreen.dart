@@ -46,7 +46,21 @@ class DescriptionScreen extends StatefulWidget {
 
 class _DescriptionScreenState extends State<DescriptionScreen> {
   bool isSaved = false;
+  String deletionID;
   CollectionReference _reference;
+
+  void checkIfSaved() async {
+    await _reference.get().then((QuerySnapshot snapshot) => {
+          snapshot.docs.forEach((doc) {
+            if (doc['Pet ID'] == widget.petID) {
+              isSaved = true;
+              deletionID = doc.id;
+              print(deletionID);
+            }
+          })
+        });
+    setState(() {});
+  }
 
   @override
   void initState() {
@@ -57,6 +71,8 @@ class _DescriptionScreenState extends State<DescriptionScreen> {
         .collection('User Data')
         .doc(widget.userID)
         .collection('Favorite Pets');
+
+    checkIfSaved();
   }
 
   @override
@@ -130,7 +146,8 @@ class _DescriptionScreenState extends State<DescriptionScreen> {
                                 ),
                                 Expanded(child: Container()),
                                 Text(
-                                    DateFormat.yMMMd().format(widget.timestamp.toDate()),
+                                  DateFormat.yMMMd()
+                                      .format(widget.timestamp.toDate()),
                                   style: TextStyle(
                                     color: Colors.black,
                                     fontSize: 15,
@@ -298,10 +315,16 @@ class _DescriptionScreenState extends State<DescriptionScreen> {
                         ),
                         onPressed: () {
                           setState(() {
+                            if (!isSaved) {
+                              _reference.add({
+                                'Pet ID': widget.petID,
+                              });
+                              checkIfSaved();
+                            } else {
+                              _reference.doc(deletionID).delete();
+                              checkIfSaved();
+                            }
                             isSaved = !isSaved;
-                            _reference.add({
-                              'Pet ID': widget.petID,
-                            });
                           });
                         },
                       ),
