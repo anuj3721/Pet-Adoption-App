@@ -345,12 +345,12 @@ class _DescriptionScreenState extends State<DescriptionScreen> {
                           borderRadius: BorderRadius.circular(20),
                         ),
                         //    color: Colors.blueAccent,
-                        margin: EdgeInsets.only(right: 60),
+                        margin: EdgeInsets.only(right: 50),
                         child: Row(
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
                             Text(
-                              '   Contact',
+                              '  Contact',
                               style:
                                   TextStyle(fontSize: 25, color: Colors.white),
                             ),

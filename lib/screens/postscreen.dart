@@ -310,6 +310,7 @@ class _PostScreenState extends State<PostScreen> {
                               'url': imageUrl,
                               'Age': _age + ' ' + _ageUnit,
                               'City': _selectedCityValue,
+                              'timestamp': Timestamp.fromDate(DateTime.now()).toDate(),
                             });
                             setState(() {
                               isLoading = false;

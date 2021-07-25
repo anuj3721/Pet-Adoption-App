@@ -50,7 +50,10 @@ class _RegistrationPageState extends State<RegistrationPage> {
                         if (value == null || value.isEmpty) {
                           return 'Please enter some text';
                         }
-                        return null;
+                        if(value.isValidName()) {
+                          return null;
+                        }
+                        return 'Enter name in valid format';
                       },
                       onChanged: (value) {
                         name = value;
@@ -230,5 +233,11 @@ extension EmailValidator on String {
     return RegExp(
             r'^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$')
         .hasMatch(this);
+  }
+}
+// Check for valid name
+extension NameValidator on String {
+  bool isValidName() {
+    return RegExp(r"^\s*([A-Za-z]{1,}([\.,] |[-']| ))+[A-Za-z]+\.?\s*$").hasMatch(this);
   }
 }
