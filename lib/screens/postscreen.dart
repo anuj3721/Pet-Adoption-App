@@ -20,6 +20,7 @@ String _phoneNumber;
 String _age;
 String _ageUnit;
 String _selectedCityValue;
+String _ownerName;
 
 class PostScreen extends StatefulWidget {
   @override
@@ -33,6 +34,18 @@ class _PostScreenState extends State<PostScreen> {
   String imageUrl;
   bool isUploaded = false;
   final _formKey = GlobalKey<FormState>();
+  CollectionReference _users;
+
+  void getOwnerName() async {
+    await _users
+        .get()
+        .then((QuerySnapshot snapshot) => snapshot.docs.forEach((doc) {
+              if (doc['Email'] == _auth.currentUser.email) {
+                _ownerName = doc['Name'];
+                print(_ownerName);
+              }
+            }));
+  }
 
   @override
   void initState() {
@@ -40,12 +53,14 @@ class _PostScreenState extends State<PostScreen> {
     super.initState();
     _auth = FirebaseAuth.instance;
     _reference = FirebaseFirestore.instance.collection('Pet Data');
+    _users = FirebaseFirestore.instance.collection('User Data');
     if (_auth.currentUser == null) {
       Timer.run(() {
         Navigator.push(context,
             MaterialPageRoute(builder: (context) => LoginOrRegister()));
       });
     }
+    getOwnerName();
   }
 
   @override
@@ -310,7 +325,9 @@ class _PostScreenState extends State<PostScreen> {
                               'url': imageUrl,
                               'Age': _age + ' ' + _ageUnit,
                               'City': _selectedCityValue,
-                              'timestamp': Timestamp.fromDate(DateTime.now()).toDate(),
+                              'timestamp':
+                                  Timestamp.fromDate(DateTime.now()).toDate(),
+                              'Owner': _ownerName,
                             });
                             setState(() {
                               isLoading = false;

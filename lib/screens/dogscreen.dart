@@ -33,7 +33,7 @@ class _DogScreenState extends State<DogScreen> {
   List<String> city = [];
   List<String> petIDs = [];
   List<String> favoritePetIDs = [];
-  List<String> usernames = [];
+  List<String> owners = [];
   List<Timestamp> timestamps = [];
   String _selectedCityValue;
   bool myPostsCalled = false;
@@ -60,7 +60,7 @@ class _DogScreenState extends State<DogScreen> {
       age.clear();
       city.clear();
       timestamps.clear();
-      usernames.clear();
+      owners.clear();
       getData();
     });
   }
@@ -80,8 +80,8 @@ class _DogScreenState extends State<DogScreen> {
       city.clear();
       petIDs.clear();
       favoritePetIDs.clear();
-      usernames.clear();
       timestamps.clear();
+      owners.clear();
     });
   }
 
@@ -99,7 +99,7 @@ class _DogScreenState extends State<DogScreen> {
       age.clear();
       city.clear();
       timestamps.clear();
-      usernames.clear();
+      owners.clear();
       getMyData();
     });
   }
@@ -118,12 +118,11 @@ class _DogScreenState extends State<DogScreen> {
       getDocumentID();
     }
     getData();
-    // getUsernames();
     setState(() {});
   }
 
-  void getDocumentID() {
-    _favorite.get().then((QuerySnapshot querySnapshot) => {
+  void getDocumentID() async {
+    await _favorite.get().then((QuerySnapshot querySnapshot) => {
           querySnapshot.docs.forEach((doc) {
             if (doc['Email'] == _auth.currentUser.email) {
               userID = doc.id;
@@ -132,16 +131,7 @@ class _DogScreenState extends State<DogScreen> {
             }
           })
         });
-  }
-
-  void getUsernames() {
-    _favorite.get().then((QuerySnapshot querySnapshot) => {
-          querySnapshot.docs.forEach((doc) {
-            for (int i = 0; i < email.length; i++) {
-              if (email[i] == doc['Email']) usernames.add(doc['Name']);
-            }
-          })
-        });
+    setState(() {});
   }
 
   void getData() async {
@@ -164,6 +154,7 @@ class _DogScreenState extends State<DogScreen> {
                   description.add(doc['Description']);
                   city.add(doc['City']);
                   timestamps.add(doc['timestamp']);
+                  owners.add(doc['Owner']);
                 }
               } else {
                 if (doc['Type'] == 'Dog' &&
@@ -181,12 +172,12 @@ class _DogScreenState extends State<DogScreen> {
                   description.add(doc['Description']);
                   city.add(doc['City']);
                   timestamps.add(doc['timestamp']);
+                  owners.add(doc['Owner']);
                 }
               }
             });
           })
         });
-    getUsernames();
     setState(() {});
   }
 
@@ -220,9 +211,9 @@ class _DogScreenState extends State<DogScreen> {
             description.add(snapshot.data()['Description']),
             city.add(snapshot.data()['City']),
             timestamps.add(snapshot.data()['timestamp']),
+            owners.add(snapshot.data()['Owner']),
           });
     }
-    getUsernames();
     setState(() {});
     Navigator.pop(context);
   }
@@ -248,6 +239,7 @@ class _DogScreenState extends State<DogScreen> {
                   description.add(doc['Description']);
                   city.add(doc['City']);
                   timestamps.add(doc['timestamp']);
+                  owners.add(doc['Owner']);
                 }
               } else {
                 if (doc['Type'] == 'Dog' &&
@@ -265,12 +257,13 @@ class _DogScreenState extends State<DogScreen> {
                   description.add(doc['Description']);
                   city.add(doc['City']);
                   timestamps.add(doc['timestamp']);
+                  owners.add(doc['Owner']);
                 }
               }
             });
           })
         });
-    getUsernames();
+
     setState(() {});
   }
 
@@ -558,7 +551,7 @@ class _DogScreenState extends State<DogScreen> {
                                           city: city[index],
                                           phoneNumber: phoneNumber[index],
                                           userID: userID,
-                                          userName: usernames[index],
+                                          userName: owners[index],
                                           timestamp: timestamps[index],
                                         ),
                                       ),
