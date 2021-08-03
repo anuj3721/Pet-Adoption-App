@@ -34,7 +34,8 @@ class _CatScreenState extends State<CatScreen> {
   List<String> city = [];
   List<String> petIDs = [];
   List<String> favoritePetIDs = [];
-  List<String> usernames = [];
+
+  List<String> owners = [];
   List<Timestamp> timestamps = [];
   String _selectedCityValue;
   bool myPostsCalled = false;
@@ -61,7 +62,8 @@ class _CatScreenState extends State<CatScreen> {
       age.clear();
       city.clear();
       timestamps.clear();
-      usernames.clear();
+      owners.clear();
+
       getData();
     });
   }
@@ -81,7 +83,7 @@ class _CatScreenState extends State<CatScreen> {
       city.clear();
       petIDs.clear();
       favoritePetIDs.clear();
-      usernames.clear();
+      owners.clear();
       timestamps.clear();
     });
   }
@@ -100,7 +102,7 @@ class _CatScreenState extends State<CatScreen> {
       age.clear();
       city.clear();
       timestamps.clear();
-      usernames.clear();
+      owners.clear();
       getMyData();
     });
   }
@@ -119,12 +121,12 @@ class _CatScreenState extends State<CatScreen> {
       getDocumentID();
     }
     getData();
-    // getUsernames();
+
     setState(() {});
   }
 
-  void getDocumentID() {
-    _favorite.get().then((QuerySnapshot querySnapshot) => {
+  void getDocumentID() async {
+    await _favorite.get().then((QuerySnapshot querySnapshot) => {
           querySnapshot.docs.forEach((doc) {
             if (doc['Email'] == _auth.currentUser.email) {
               userID = doc.id;
@@ -133,16 +135,7 @@ class _CatScreenState extends State<CatScreen> {
             }
           })
         });
-  }
-
-  void getUsernames() {
-    _favorite.get().then((QuerySnapshot querySnapshot) => {
-          querySnapshot.docs.forEach((doc) {
-            for (int i = 0; i < email.length; i++) {
-              if (email[i] == doc['Email']) usernames.add(doc['Name']);
-            }
-          })
-        });
+    setState(() {});
   }
 
   void getData() async {
@@ -165,6 +158,7 @@ class _CatScreenState extends State<CatScreen> {
                   description.add(doc['Description']);
                   city.add(doc['City']);
                   timestamps.add(doc['timestamp']);
+                  owners.add(doc['Owner']);
                 }
               } else {
                 if (doc['Type'] == 'Cat' &&
@@ -182,12 +176,13 @@ class _CatScreenState extends State<CatScreen> {
                   description.add(doc['Description']);
                   city.add(doc['City']);
                   timestamps.add(doc['timestamp']);
+                  owners.add(doc['Owner']);
                 }
               }
             });
           })
         });
-    getUsernames();
+
     setState(() {});
   }
 
@@ -221,9 +216,10 @@ class _CatScreenState extends State<CatScreen> {
             description.add(snapshot.data()['Description']),
             city.add(snapshot.data()['City']),
             timestamps.add(snapshot.data()['timestamp']),
+            owners.add(snapshot.data()['Owner']),
           });
     }
-    getUsernames();
+
     setState(() {});
     Navigator.pop(context);
   }
@@ -249,6 +245,7 @@ class _CatScreenState extends State<CatScreen> {
                   description.add(doc['Description']);
                   city.add(doc['City']);
                   timestamps.add(doc['timestamp']);
+                  owners.add(doc['Owner']);
                 }
               } else {
                 if (doc['Type'] == 'Cat' &&
@@ -266,12 +263,12 @@ class _CatScreenState extends State<CatScreen> {
                   description.add(doc['Description']);
                   city.add(doc['City']);
                   timestamps.add(doc['timestamp']);
+                  owners.add(doc['Owner']);
                 }
               }
             });
           })
         });
-    getUsernames();
     setState(() {});
   }
 
@@ -332,7 +329,6 @@ class _CatScreenState extends State<CatScreen> {
                     setState(() {
                       clearData();
                       getData();
-                      //  getUsernames();
                       Navigator.pop(context);
                     });
                   } else {
@@ -391,7 +387,6 @@ class _CatScreenState extends State<CatScreen> {
                     setState(() {
                       clearData();
                       getData();
-                      //    getUsernames();
                       Navigator.pop(context);
                     });
                   }
@@ -585,7 +580,7 @@ class _CatScreenState extends State<CatScreen> {
                                           city: city[index],
                                           phoneNumber: phoneNumber[index],
                                           userID: userID,
-                                          userName: usernames[index],
+                                          userName: owners[index],
                                           timestamp: timestamps[index],
                                         ),
                                       ),

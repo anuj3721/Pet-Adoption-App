@@ -265,12 +265,14 @@ class _DescriptionScreenState extends State<DescriptionScreen> {
                         SizedBox(
                           width: 5,
                         ),
-                        Text(
-                          widget.address + ', ' + widget.city,
-                          style: TextStyle(
-                            fontSize: 16,
-                            color: Colors.black,
-                            fontWeight: FontWeight.w400,
+                        Flexible(
+                          child: Text(
+                            widget.address + ', ' + widget.city,
+                            style: TextStyle(
+                              //fontSize: 16,
+                              color: Colors.black,
+                              fontWeight: FontWeight.w400,
+                            ),
                           ),
                         )
                       ],
