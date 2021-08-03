@@ -19,7 +19,7 @@ class DescriptionScreen extends StatefulWidget {
   String city;
   String email;
   String type;
-  String userID = '5D3vJINmW02wwSgyBOFj';
+  String userID;
   String petID;
   String userName;
   Timestamp timestamp;
@@ -347,53 +347,59 @@ class _DescriptionScreenState extends State<DescriptionScreen> {
                         //    color: Colors.blueAccent,
                         margin: EdgeInsets.only(right: 50),
                         child: Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
                             Text(
-                              '  Contact',
+                              ' Contact',
                               style:
                                   TextStyle(fontSize: 25, color: Colors.white),
                             ),
+                            SizedBox(width: 10),
                             Row(
                               children: [
-                                ElevatedButton(
-                                  child: Icon(
-                                    Icons.message,
-                                    size: 20,
-                                    color: Colors.white,
+                                Padding(
+                                  padding: const EdgeInsets.all(0.0),
+                                  child: ElevatedButton(
+                                    child: Icon(
+                                      Icons.message,
+                                      size: 20,
+                                      color: Colors.white,
+                                    ),
+                                    style: ElevatedButton.styleFrom(
+                                      shape: CircleBorder(),
+                                      primary: Colors.yellow.shade700,
+                                      onPrimary: Colors.red,
+                                    ),
+                                    onPressed: () async {
+                                      await canLaunch(
+                                              'sms:+91${widget.phoneNumber}')
+                                          ? await launch(
+                                              'sms:+91${widget.phoneNumber}')
+                                          : throw 'Could not launch';
+                                    },
                                   ),
-                                  style: ElevatedButton.styleFrom(
-                                    shape: CircleBorder(),
-                                    primary: Colors.yellow.shade700,
-                                    onPrimary: Colors.red,
-                                  ),
-                                  onPressed: () async {
-                                    await canLaunch(
-                                            'sms:+91${widget.phoneNumber}')
-                                        ? await launch(
-                                            'sms:+91${widget.phoneNumber}')
-                                        : throw 'Could not launch';
-                                  },
                                 ),
-                                ElevatedButton(
-                                  child: Icon(
-                                    Icons.call,
-                                    size: 20,
-                                    color: Colors.white,
+                                Padding(
+                                  padding: const EdgeInsets.all(0.0),
+                                  child: ElevatedButton(
+                                    child: Icon(
+                                      Icons.call,
+                                      size: 20,
+                                      color: Colors.white,
+                                    ),
+                                    style: ElevatedButton.styleFrom(
+                                      shape: CircleBorder(),
+                                      primary: Colors.green,
+                                      onPrimary: Colors.red,
+                                    ),
+                                    onPressed: () async {
+                                      print(widget.phoneNumber);
+                                      await canLaunch(
+                                              'tel:+91${widget.phoneNumber}')
+                                          ? await launch(
+                                              'tel:+91${widget.phoneNumber}')
+                                          : throw 'Could not launch';
+                                    },
                                   ),
-                                  style: ElevatedButton.styleFrom(
-                                    shape: CircleBorder(),
-                                    primary: Colors.green,
-                                    onPrimary: Colors.red,
-                                  ),
-                                  onPressed: () async {
-                                    print(widget.phoneNumber);
-                                    await canLaunch(
-                                            'tel:+91${widget.phoneNumber}')
-                                        ? await launch(
-                                            'tel:+91${widget.phoneNumber}')
-                                        : throw 'Could not launch';
-                                  },
                                 ),
                               ],
                             ),

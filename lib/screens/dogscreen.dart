@@ -6,6 +6,7 @@ import 'package:pet_adoption_app/screens/descriptionScreen.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:pet_adoption_app/components/indianCities.dart';
 import 'package:pet_adoption_app/screens/loginORregister.dart';
+import 'package:pet_adoption_app/screens/manageDogPosts.dart';
 import 'package:searchable_dropdown/searchable_dropdown.dart';
 import 'package:pet_adoption_app/screens/profileScreen.dart';
 
@@ -396,13 +397,32 @@ class _DogScreenState extends State<DogScreen> {
                   }
                 },
               ),
-              // ListTile(
-              //   title: Text(
-              //     'Saved Posts',
-              //     style: TextStyle(fontSize: 17),
-              //   ),
-              //   onTap: savedPostsClicked,
-              // ),
+              Padding(
+                padding: const EdgeInsets.only(right: 15.0),
+                child: ListTile(
+                  title: Text(
+                    'Manage Posts',
+                    style: TextStyle(fontSize: 17),
+                  ),
+                  trailing: Icon(
+                    Icons.edit,
+                    size: 25,
+                  ),
+                  onTap: () {
+                    if (_auth.currentUser != null) {
+                      Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                              builder: (context) => ManageDogPostsScreen()));
+                    } else {
+                      Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                              builder: (context) => LoginOrRegister()));
+                    }
+                  },
+                ),
+              ),
             ],
           ),
         ),

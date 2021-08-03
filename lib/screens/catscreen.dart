@@ -8,6 +8,7 @@ import 'package:pet_adoption_app/components/indianCities.dart';
 import 'package:pet_adoption_app/screens/loginORregister.dart';
 import 'package:searchable_dropdown/searchable_dropdown.dart';
 import 'package:pet_adoption_app/screens/profileScreen.dart';
+import 'package:pet_adoption_app/screens/manageCatPosts.dart';
 
 class CatScreen extends StatefulWidget {
   @override
@@ -395,6 +396,32 @@ class _CatScreenState extends State<CatScreen> {
                     });
                   }
                 },
+              ),
+              Padding(
+                padding: const EdgeInsets.only(right: 15.0),
+                child: ListTile(
+                  title: Text(
+                    'Manage Posts',
+                    style: TextStyle(fontSize: 17),
+                  ),
+                  trailing: Icon(
+                    Icons.edit,
+                    size: 25,
+                  ),
+                  onTap: () {
+                    if (_auth.currentUser != null) {
+                      Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                              builder: (context) => ManageCatPostsScreen()));
+                    } else {
+                      Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                              builder: (context) => LoginOrRegister()));
+                    }
+                  },
+                ),
               ),
               // ListTile(
               //   title: Text(
