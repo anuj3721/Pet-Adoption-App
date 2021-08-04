@@ -19,7 +19,7 @@ class DescriptionScreen extends StatefulWidget {
   String city;
   String email;
   String type;
-  String userID = '5D3vJINmW02wwSgyBOFj';
+  String userID;
   String petID;
   String userName;
   Timestamp timestamp;
@@ -46,7 +46,21 @@ class DescriptionScreen extends StatefulWidget {
 
 class _DescriptionScreenState extends State<DescriptionScreen> {
   bool isSaved = false;
+  String deletionID;
   CollectionReference _reference;
+
+  void checkIfSaved() async {
+    await _reference.get().then((QuerySnapshot snapshot) => {
+          snapshot.docs.forEach((doc) {
+            if (doc['Pet ID'] == widget.petID) {
+              isSaved = true;
+              deletionID = doc.id;
+              print(deletionID);
+            }
+          })
+        });
+    setState(() {});
+  }
 
   @override
   void initState() {
@@ -57,6 +71,8 @@ class _DescriptionScreenState extends State<DescriptionScreen> {
         .collection('User Data')
         .doc(widget.userID)
         .collection('Favorite Pets');
+
+    checkIfSaved();
   }
 
   @override
@@ -130,7 +146,8 @@ class _DescriptionScreenState extends State<DescriptionScreen> {
                                 ),
                                 Expanded(child: Container()),
                                 Text(
-                                    DateFormat.yMMMd().format(widget.timestamp.toDate()),
+                                  DateFormat.yMMMd()
+                                      .format(widget.timestamp.toDate()),
                                   style: TextStyle(
                                     color: Colors.black,
                                     fontSize: 15,
@@ -248,12 +265,14 @@ class _DescriptionScreenState extends State<DescriptionScreen> {
                         SizedBox(
                           width: 5,
                         ),
-                        Text(
-                          widget.address + ', ' + widget.city,
-                          style: TextStyle(
-                            fontSize: 16,
-                            color: Colors.black,
-                            fontWeight: FontWeight.w400,
+                        Flexible(
+                          child: Text(
+                            widget.address + ', ' + widget.city,
+                            style: TextStyle(
+                              //fontSize: 16,
+                              color: Colors.black,
+                              fontWeight: FontWeight.w400,
+                            ),
                           ),
                         )
                       ],
@@ -298,10 +317,16 @@ class _DescriptionScreenState extends State<DescriptionScreen> {
                         ),
                         onPressed: () {
                           setState(() {
+                            if (!isSaved) {
+                              _reference.add({
+                                'Pet ID': widget.petID,
+                              });
+                              checkIfSaved();
+                            } else {
+                              _reference.doc(deletionID).delete();
+                              checkIfSaved();
+                            }
                             isSaved = !isSaved;
-                            _reference.add({
-                              'Pet ID': widget.petID,
-                            });
                           });
                         },
                       ),
@@ -322,55 +347,61 @@ class _DescriptionScreenState extends State<DescriptionScreen> {
                           borderRadius: BorderRadius.circular(20),
                         ),
                         //    color: Colors.blueAccent,
-                        margin: EdgeInsets.only(right: 60),
+                        margin: EdgeInsets.only(right: 50),
                         child: Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
                             Text(
-                              '   Contact',
+                              ' Contact',
                               style:
                                   TextStyle(fontSize: 25, color: Colors.white),
                             ),
+                            SizedBox(width: 10),
                             Row(
                               children: [
-                                ElevatedButton(
-                                  child: Icon(
-                                    Icons.message,
-                                    size: 20,
-                                    color: Colors.white,
+                                Padding(
+                                  padding: const EdgeInsets.all(0.0),
+                                  child: ElevatedButton(
+                                    child: Icon(
+                                      Icons.message,
+                                      size: 20,
+                                      color: Colors.white,
+                                    ),
+                                    style: ElevatedButton.styleFrom(
+                                      shape: CircleBorder(),
+                                      primary: Colors.yellow.shade700,
+                                      onPrimary: Colors.red,
+                                    ),
+                                    onPressed: () async {
+                                      await canLaunch(
+                                              'sms:+91${widget.phoneNumber}')
+                                          ? await launch(
+                                              'sms:+91${widget.phoneNumber}')
+                                          : throw 'Could not launch';
+                                    },
                                   ),
-                                  style: ElevatedButton.styleFrom(
-                                    shape: CircleBorder(),
-                                    primary: Colors.yellow.shade700,
-                                    onPrimary: Colors.red,
-                                  ),
-                                  onPressed: () async {
-                                    await canLaunch(
-                                            'sms:+91${widget.phoneNumber}')
-                                        ? await launch(
-                                            'sms:+91${widget.phoneNumber}')
-                                        : throw 'Could not launch';
-                                  },
                                 ),
-                                ElevatedButton(
-                                  child: Icon(
-                                    Icons.call,
-                                    size: 20,
-                                    color: Colors.white,
+                                Padding(
+                                  padding: const EdgeInsets.all(0.0),
+                                  child: ElevatedButton(
+                                    child: Icon(
+                                      Icons.call,
+                                      size: 20,
+                                      color: Colors.white,
+                                    ),
+                                    style: ElevatedButton.styleFrom(
+                                      shape: CircleBorder(),
+                                      primary: Colors.green,
+                                      onPrimary: Colors.red,
+                                    ),
+                                    onPressed: () async {
+                                      print(widget.phoneNumber);
+                                      await canLaunch(
+                                              'tel:+91${widget.phoneNumber}')
+                                          ? await launch(
+                                              'tel:+91${widget.phoneNumber}')
+                                          : throw 'Could not launch';
+                                    },
                                   ),
-                                  style: ElevatedButton.styleFrom(
-                                    shape: CircleBorder(),
-                                    primary: Colors.green,
-                                    onPrimary: Colors.red,
-                                  ),
-                                  onPressed: () async {
-                                    print(widget.phoneNumber);
-                                    await canLaunch(
-                                            'tel:+91${widget.phoneNumber}')
-                                        ? await launch(
-                                            'tel:+91${widget.phoneNumber}')
-                                        : throw 'Could not launch';
-                                  },
                                 ),
                               ],
                             ),

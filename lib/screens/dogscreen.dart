@@ -6,7 +6,9 @@ import 'package:pet_adoption_app/screens/descriptionScreen.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:pet_adoption_app/components/indianCities.dart';
 import 'package:pet_adoption_app/screens/loginORregister.dart';
+import 'package:pet_adoption_app/screens/manageDogPosts.dart';
 import 'package:searchable_dropdown/searchable_dropdown.dart';
+import 'package:pet_adoption_app/screens/profileScreen.dart';
 
 class DogScreen extends StatefulWidget {
   @override
@@ -32,7 +34,7 @@ class _DogScreenState extends State<DogScreen> {
   List<String> city = [];
   List<String> petIDs = [];
   List<String> favoritePetIDs = [];
-  List<String> usernames = [];
+  List<String> owners = [];
   List<Timestamp> timestamps = [];
   String _selectedCityValue;
   bool myPostsCalled = false;
@@ -40,6 +42,7 @@ class _DogScreenState extends State<DogScreen> {
   bool myPostsVisible = false;
   bool favoritesVisible = false;
   String userID;
+  String username;
   // var uid;
 
   void cityCallback(newCityValue) {
@@ -58,7 +61,7 @@ class _DogScreenState extends State<DogScreen> {
       age.clear();
       city.clear();
       timestamps.clear();
-      usernames.clear();
+      owners.clear();
       getData();
     });
   }
@@ -78,8 +81,8 @@ class _DogScreenState extends State<DogScreen> {
       city.clear();
       petIDs.clear();
       favoritePetIDs.clear();
-      usernames.clear();
       timestamps.clear();
+      owners.clear();
     });
   }
 
@@ -97,7 +100,7 @@ class _DogScreenState extends State<DogScreen> {
       age.clear();
       city.clear();
       timestamps.clear();
-      usernames.clear();
+      owners.clear();
       getMyData();
     });
   }
@@ -116,31 +119,20 @@ class _DogScreenState extends State<DogScreen> {
       getDocumentID();
     }
     getData();
-   // getUsernames();
     setState(() {});
   }
 
-  void getDocumentID() {
-    _favorite.get().then((QuerySnapshot querySnapshot) => {
+  void getDocumentID() async {
+    await _favorite.get().then((QuerySnapshot querySnapshot) => {
           querySnapshot.docs.forEach((doc) {
             if (doc['Email'] == _auth.currentUser.email) {
               userID = doc.id;
+              username = doc['Name'];
               print(userID);
             }
           })
         });
-  }
-
-  void getUsernames() {
-    _favorite.get().then((QuerySnapshot querySnapshot) => {
-      querySnapshot.docs.forEach((doc) {
-        for(int i=0;i<email.length;i++)
-        {
-          if(email[i] == doc['Email'])
-            usernames.add(doc['Name']);
-        }
-      })
-    });
+    setState(() {});
   }
 
   void getData() async {
@@ -163,6 +155,7 @@ class _DogScreenState extends State<DogScreen> {
                   description.add(doc['Description']);
                   city.add(doc['City']);
                   timestamps.add(doc['timestamp']);
+                  owners.add(doc['Owner']);
                 }
               } else {
                 if (doc['Type'] == 'Dog' &&
@@ -180,18 +173,17 @@ class _DogScreenState extends State<DogScreen> {
                   description.add(doc['Description']);
                   city.add(doc['City']);
                   timestamps.add(doc['timestamp']);
+                  owners.add(doc['Owner']);
                 }
               }
             });
           })
         });
-    getUsernames();
-    setState(() {
-    });
+    setState(() {});
   }
 
   void savedPostsClicked() async {
-   // clearData();
+    // clearData();
     await _favorite
         .doc(userID)
         .collection('Favorite Pets')
@@ -220,9 +212,9 @@ class _DogScreenState extends State<DogScreen> {
             description.add(snapshot.data()['Description']),
             city.add(snapshot.data()['City']),
             timestamps.add(snapshot.data()['timestamp']),
+            owners.add(snapshot.data()['Owner']),
           });
     }
-    getUsernames();
     setState(() {});
     Navigator.pop(context);
   }
@@ -248,6 +240,7 @@ class _DogScreenState extends State<DogScreen> {
                   description.add(doc['Description']);
                   city.add(doc['City']);
                   timestamps.add(doc['timestamp']);
+                  owners.add(doc['Owner']);
                 }
               } else {
                 if (doc['Type'] == 'Dog' &&
@@ -265,14 +258,14 @@ class _DogScreenState extends State<DogScreen> {
                   description.add(doc['Description']);
                   city.add(doc['City']);
                   timestamps.add(doc['timestamp']);
+                  owners.add(doc['Owner']);
                 }
               }
             });
           })
         });
-    getUsernames();
-    setState(() {
-    });
+
+    setState(() {});
   }
 
   @override
@@ -290,6 +283,9 @@ class _DogScreenState extends State<DogScreen> {
                 onTap: () {
                   if (_auth.currentUser != null) {
                     _auth.signOut();
+                    setState(() {
+                      username = null;
+                    });
                     Navigator.pop(context);
                   }
                 },
@@ -301,15 +297,22 @@ class _DogScreenState extends State<DogScreen> {
                     'Community Chat',
                     style: TextStyle(fontSize: 17.0),
                   ),
-                  trailing: Icon(Icons.chat, size: 25,),
+                  trailing: Icon(
+                    Icons.chat,
+                    size: 25,
+                  ),
                   onTap: () {
-                 //   Navigator.push(context, MaterialPageRoute(builder: (context) => ChatScreen()));
-                    if(_auth.currentUser != null) {
-                      Navigator.push(context,
-                          MaterialPageRoute(builder: (context) => ChatScreen()));
-                    }
-                    else {
-                      Navigator.push(context, MaterialPageRoute(builder: (context) => LoginOrRegister()));
+                    //   Navigator.push(context, MaterialPageRoute(builder: (context) => ChatScreen()));
+                    if (_auth.currentUser != null) {
+                      Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                              builder: (context) => ChatScreen()));
+                    } else {
+                      Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                              builder: (context) => LoginOrRegister()));
                     }
                   },
                 ),
@@ -322,7 +325,7 @@ class _DogScreenState extends State<DogScreen> {
                     setState(() {
                       clearData();
                       getData();
-                    //  getUsernames();
+                      //  getUsernames();
                       Navigator.pop(context);
                     });
                   } else {
@@ -381,19 +384,38 @@ class _DogScreenState extends State<DogScreen> {
                     setState(() {
                       clearData();
                       getData();
-                  //    getUsernames();
+                      //    getUsernames();
                       Navigator.pop(context);
                     });
                   }
                 },
               ),
-              // ListTile(
-              //   title: Text(
-              //     'Saved Posts',
-              //     style: TextStyle(fontSize: 17),
-              //   ),
-              //   onTap: savedPostsClicked,
-              // ),
+              Padding(
+                padding: const EdgeInsets.only(right: 15.0),
+                child: ListTile(
+                  title: Text(
+                    'Manage Posts',
+                    style: TextStyle(fontSize: 17),
+                  ),
+                  trailing: Icon(
+                    Icons.edit,
+                    size: 25,
+                  ),
+                  onTap: () {
+                    if (_auth.currentUser != null) {
+                      Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                              builder: (context) => ManageDogPostsScreen()));
+                    } else {
+                      Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                              builder: (context) => LoginOrRegister()));
+                    }
+                  },
+                ),
+              ),
             ],
           ),
         ),
@@ -406,7 +428,7 @@ class _DogScreenState extends State<DogScreen> {
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
                   Expanded(
-                    flex: 1,
+                    flex: 2,
                     child: IconButton(
                       icon: Icon(Icons.menu),
                       onPressed: () {
@@ -428,9 +450,29 @@ class _DogScreenState extends State<DogScreen> {
                     ),
                   ),
                   Expanded(
-                    flex: 1,
-                    child: CircleAvatar(
-                      child: Image.asset('images/unknown_account.jpg'),
+                    flex: 2,
+                    child: Column(
+                      children: [
+                        IconButton(
+                          onPressed: () {
+                            if (_auth.currentUser != null) {
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                  builder: (context) => ProfilePage(
+                                    username: username,
+                                  ),
+                                ),
+                              );
+                            }
+                          },
+                          icon: Icon(Icons.person_rounded),
+                        ),
+                        Text(
+                          username != null ? username : "",
+                          textAlign: TextAlign.center,
+                        ),
+                      ],
                     ),
                   ),
                 ],
@@ -529,7 +571,7 @@ class _DogScreenState extends State<DogScreen> {
                                           city: city[index],
                                           phoneNumber: phoneNumber[index],
                                           userID: userID,
-                                          userName: usernames[index],
+                                          userName: owners[index],
                                           timestamp: timestamps[index],
                                         ),
                                       ),
