@@ -64,6 +64,12 @@ class _LoginOrRegisterState extends State<LoginOrRegister> {
                             }
                           }
                         },
+                        onTap: (){
+                          FocusScopeNode currentFocus = FocusScope.of(context);
+                          if (!currentFocus.hasPrimaryFocus) {
+                            currentFocus.unfocus();
+                          }
+                        },
                         onChanged: (value) {
                           email = value;
                           print(email);
@@ -89,6 +95,12 @@ class _LoginOrRegisterState extends State<LoginOrRegister> {
                             return 'Please enter some text';
                           }
                           return null;
+                        },
+                        onTap: (){
+                          FocusScopeNode currentFocus = FocusScope.of(context);
+                          if (!currentFocus.hasPrimaryFocus) {
+                            currentFocus.unfocus();
+                          }
                         },
                         onChanged: (value) {
                           password = value;
@@ -158,6 +170,10 @@ class _LoginOrRegisterState extends State<LoginOrRegister> {
                             setState(() {
                               isLoading = false;
                             });
+                            FocusScopeNode currentFocus = FocusScope.of(context);
+                            if (!currentFocus.hasPrimaryFocus) {
+                              currentFocus.unfocus();
+                            }
                             Navigator.push(
                                 context,
                                 MaterialPageRoute(
@@ -178,6 +194,10 @@ class _LoginOrRegisterState extends State<LoginOrRegister> {
                     Flexible(
                       child: GestureDetector(
                         onTap: () {
+                          FocusScopeNode currentFocus = FocusScope.of(context);
+                          if (!currentFocus.hasPrimaryFocus) {
+                            currentFocus.unfocus();
+                          }
                           Navigator.push(
                               context,
                               MaterialPageRoute(

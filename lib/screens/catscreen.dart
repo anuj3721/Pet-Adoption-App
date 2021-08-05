@@ -8,7 +8,8 @@ import 'package:pet_adoption_app/components/indianCities.dart';
 import 'package:pet_adoption_app/screens/loginORregister.dart';
 import 'package:searchable_dropdown/searchable_dropdown.dart';
 import 'package:pet_adoption_app/screens/profileScreen.dart';
-import 'package:pet_adoption_app/screens/manageCatPosts.dart';
+import 'package:pet_adoption_app/screens/manageDogPosts.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 
 class CatScreen extends StatefulWidget {
   @override
@@ -44,6 +45,7 @@ class _CatScreenState extends State<CatScreen> {
   bool favoritesVisible = false;
   String userID;
   String username;
+  bool isLoggedIn = false;
   // var uid;
 
   void cityCallback(newCityValue) {
@@ -63,7 +65,6 @@ class _CatScreenState extends State<CatScreen> {
       city.clear();
       timestamps.clear();
       owners.clear();
-
       getData();
     });
   }
@@ -118,6 +119,7 @@ class _CatScreenState extends State<CatScreen> {
     //  uid = _auth.currentUser.uid;
     _favorite = FirebaseFirestore.instance.collection('User Data');
     if (_auth.currentUser != null) {
+      isLoggedIn = true;
       getDocumentID();
     }
     getData();
@@ -230,8 +232,7 @@ class _CatScreenState extends State<CatScreen> {
             setState(() {
               //  print(_pets.doc().id);
               if (_selectedCityValue == null) {
-                if (doc['Type'] == 'Cat' &&
-                    doc['Email'].contains(_auth.currentUser.email)) {
+                if (doc['Email'].contains(_auth.currentUser.email)) {
                   petNames.add(doc['Pet Name']);
                   sex.add(doc['Sex']);
                   petIDs.add(doc.id);
@@ -248,8 +249,7 @@ class _CatScreenState extends State<CatScreen> {
                   owners.add(doc['Owner']);
                 }
               } else {
-                if (doc['Type'] == 'Cat' &&
-                    doc['City'].contains(_selectedCityValue)) {
+                if (doc['City'].contains(_selectedCityValue)) {
                   petNames.add(doc['Pet Name']);
                   sex.add(doc['Sex']);
                   petIDs.add(doc.id);
@@ -281,16 +281,20 @@ class _CatScreenState extends State<CatScreen> {
             children: [
               ListTile(
                 title: Text(
-                  'LOGOUT',
+                  isLoggedIn ? 'LOGOUT' : 'LOGIN',
                   style: TextStyle(fontSize: 17.0),
                 ),
                 onTap: () {
                   if (_auth.currentUser != null) {
                     _auth.signOut();
                     setState(() {
+                      isLoggedIn = false;
                       username = null;
                     });
                     Navigator.pop(context);
+                  }
+                  else{
+                    Navigator.push(context, MaterialPageRoute(builder: (context)=> LoginOrRegister()));
                   }
                 },
               ),
@@ -313,30 +317,51 @@ class _CatScreenState extends State<CatScreen> {
                           MaterialPageRoute(
                               builder: (context) => ChatScreen()));
                     } else {
-                      Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                              builder: (context) => LoginOrRegister()));
+                      // Navigator.push(
+                      //     context,
+                      //     MaterialPageRoute(
+                      //         builder: (context) => LoginOrRegister()));
+                      Fluttertoast.showToast(
+                          msg: "Please login to view",
+                          toastLength: Toast.LENGTH_SHORT,
+                          gravity: ToastGravity.BOTTOM,
+                          backgroundColor: Colors.grey,
+                          textColor: Colors.white,
+                          fontSize: 16.0
+                      );
                     }
                   },
                 ),
               ),
               SwitchListTile(
                 onChanged: (value) {
-                  myPostsVisible = value;
-                  if (value == false) {
-                    //all posts
-                    setState(() {
-                      clearData();
-                      getData();
-                      Navigator.pop(context);
-                    });
-                  } else {
-                    //my posts
-                    setState(() {
-                      myPostsCallback();
-                      Navigator.pop(context);
-                    });
+                  if( _auth.currentUser != null) {
+                    myPostsVisible = value;
+                    if (value == false) {
+                      //all posts
+                      setState(() {
+                        clearData();
+                        getData();
+                        //  getUsernames();
+                        Navigator.pop(context);
+                      });
+                    } else {
+                      //my posts
+                      setState(() {
+                        myPostsCallback();
+                        Navigator.pop(context);
+                      });
+                    }
+                  }
+                  else {
+                    Fluttertoast.showToast(
+                        msg: "Please login to view",
+                        toastLength: Toast.LENGTH_SHORT,
+                        gravity: ToastGravity.BOTTOM,
+                        backgroundColor: Colors.grey,
+                        textColor: Colors.white,
+                        fontSize: 16.0
+                    );
                   }
                 },
                 value: myPostsVisible,
@@ -345,52 +370,40 @@ class _CatScreenState extends State<CatScreen> {
                   style: TextStyle(fontSize: 17.0),
                 ),
               ),
-              // ListTile(
-              //   title: Text(
-              //     'Home Screen',
-              //     style: TextStyle(fontSize: 17),
-              //   ),
-              //   onTap: () {
-              //     setState(() {
-              //       clearData();
-              //       getData();
-              //       Navigator.pop(context);
-              //     });
-              //   },
-              // ),
-              // ListTile(
-              //   title: Text(
-              //     'My Posts',
-              //     style: TextStyle(fontSize: 17),
-              //   ),
-              //   onTap: () {
-              //     setState(() {
-              //       myPostsCallback();
-              //       Navigator.pop(context);
-              //     });
-              //   },
-              // ),
               SwitchListTile(
                 title: Text(
                   'Saved Posts',
                   style: TextStyle(fontSize: 17.0),
                 ),
-                value: favoritesVisible,
                 onChanged: (value) {
-                  favoritesVisible = value;
-                  if (value == true) {
-                    setState(() {
-                      clearData();
-                      savedPostsClicked();
-                    });
-                  } else {
-                    setState(() {
-                      clearData();
-                      getData();
-                      Navigator.pop(context);
-                    });
+                  if(_auth.currentUser != null) {
+                    favoritesVisible = value;
+                    if (value == true) {
+                      setState(() {
+                        clearData();
+                        savedPostsClicked();
+                      });
+                    } else {
+                      setState(() {
+                        clearData();
+                        getData();
+                        //    getUsernames();
+                        Navigator.pop(context);
+                      });
+                    }
+                  }
+                  else {
+                    Fluttertoast.showToast(
+                        msg: "Please login to view",
+                        toastLength: Toast.LENGTH_SHORT,
+                        gravity: ToastGravity.BOTTOM,
+                        backgroundColor: Colors.grey,
+                        textColor: Colors.white,
+                        fontSize: 16.0
+                    );
                   }
                 },
+                value: favoritesVisible,
               ),
               Padding(
                 padding: const EdgeInsets.only(right: 15.0),
@@ -408,12 +421,20 @@ class _CatScreenState extends State<CatScreen> {
                       Navigator.push(
                           context,
                           MaterialPageRoute(
-                              builder: (context) => ManageCatPostsScreen()));
+                              builder: (context) => ManageDogPostsScreen()));
                     } else {
-                      Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                              builder: (context) => LoginOrRegister()));
+                      // Navigator.push(
+                      //     context,
+                      //     MaterialPageRoute(
+                      //         builder: (context) => LoginOrRegister()));
+                      Fluttertoast.showToast(
+                          msg: "Please login to view",
+                          toastLength: Toast.LENGTH_SHORT,
+                          gravity: ToastGravity.BOTTOM,
+                          backgroundColor: Colors.grey,
+                          textColor: Colors.white,
+                          fontSize: 16.0
+                      );
                     }
                   },
                 ),

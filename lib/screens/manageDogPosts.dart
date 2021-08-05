@@ -2,6 +2,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:pet_adoption_app/screens/homepage.dart';
+import 'package:pet_adoption_app/screens/editScreen.dart';
 
 class ManageDogPostsScreen extends StatefulWidget {
   @override
@@ -92,8 +93,7 @@ class _ManageDogPostsState extends State<ManageDogPostsScreen> {
     querySnapshot.docs.forEach((doc) {
       setState(() {
         //  print(_pets.doc().id);
-          if (doc['Type'] == 'Dog' &&
-              doc['Email'].contains(_auth.currentUser.email)) {
+          if (doc['Email'].contains(_auth.currentUser.email)) {
             petNames.add(doc['Pet Name']);
             sex.add(doc['Sex']);
             petIDs.add(doc.id);
@@ -117,98 +117,127 @@ class _ManageDogPostsState extends State<ManageDogPostsScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return SafeArea(
-      child: Scaffold(
-        appBar: AppBar(
-          title: Text('Manage Posts'),
-          centerTitle: true,
-          leading: IconButton(
-            icon: Icon(Icons.arrow_back,size: 26,),
-            onPressed: (){
-              Navigator.push(context,MaterialPageRoute(builder: (context) => HomePage()));
-            },
+    return WillPopScope(
+      onWillPop: () async => false,
+      child: SafeArea(
+        child: Scaffold(
+          appBar: AppBar(
+            title: Text('Manage Posts'),
+            centerTitle: true,
+            leading: IconButton(
+              icon: Icon(Icons.arrow_back,size: 26,),
+              onPressed: (){
+                Navigator.push(context,MaterialPageRoute(builder: (context) => HomePage()));
+              },
+            ),
           ),
-        ),
-        body: Container(
-          child: SingleChildScrollView(
-            scrollDirection: Axis.vertical,
-            physics: BouncingScrollPhysics(),
-            child: Column(
-              children: <Widget>[
-                SizedBox(height: 20,),
-                ListView.builder(
-                  physics: NeverScrollableScrollPhysics(),
-                  scrollDirection: Axis.vertical,
-                  shrinkWrap: true,
-                  itemCount: petNames.length,
-                  itemBuilder: (context, index) {
-                    return petNames.length == 0
-                        ? null
-                        : Padding(
-                          padding: const EdgeInsets.only(top: 10.0),
-                          child: Column(
-                            children: [
-                              ListTile(
-                                title: Text(
-                                    petNames[index],
-                                  style: TextStyle(
-                                    fontSize: 18,
+          body: Container(
+            child: SingleChildScrollView(
+              scrollDirection: Axis.vertical,
+              physics: BouncingScrollPhysics(),
+              child: Column(
+                children: <Widget>[
+                  SizedBox(height: 20,),
+                  ListView.builder(
+                    physics: NeverScrollableScrollPhysics(),
+                    scrollDirection: Axis.vertical,
+                    shrinkWrap: true,
+                    itemCount: petNames.length,
+                    itemBuilder: (context, index) {
+                      return petNames.length == 0
+                          ? null
+                          : Padding(
+                            padding: const EdgeInsets.only(top: 10.0),
+                            child: Column(
+                              children: [
+                                ListTile(
+                                  title: Text(
+                                      petNames[index],
+                                    style: TextStyle(
+                                      fontSize: 18,
+                                    ),
+                                  ),
+                                  leading: CircleAvatar(
+                                    radius: 30.0,
+                                    backgroundImage: NetworkImage(url[index]),
+                                  ),
+                                  trailing: Wrap(
+                                    children: [
+                                      IconButton(
+                                        icon: Icon(Icons.edit,
+                                          size: 25,
+                                        ),
+                                        onPressed: ()
+                                        {
+                                          Navigator.push(context, MaterialPageRoute(builder: (context) => EditScreen(
+                                            description: description[index],
+                                          phoneNumber: (phoneNumber[index]).toString(),
+                                          petNames: petNames[index],
+                                          sex: sex[index],
+                                          type: type[index],
+                                          address: address[index],
+                                          breed: breed[index],
+                                          url: url[index],
+                                          age: age[index],
+                                          city: city[index],
+                                          petIDs: petIDs[index],
+                                          timestamps: timestamps[index],
+                                          )));
+                                        },
+                                      ),
+                                      IconButton(
+                                        icon: Icon(Icons.delete,
+                                          size: 25,
+                                        ),
+                                        onPressed: ()
+                                        {
+                                          Widget cancelButton = TextButton(
+                                            child: Text("No"),
+                                            onPressed:  () {
+                                              Navigator.of(context).pop();
+                                            },
+                                          );
+                                          Widget continueButton = TextButton(
+                                            child: Text("Yes"),
+                                            onPressed:  () {
+                                              _pets.doc(petIDs[index]).delete();
+                                              Navigator.of(context).pop();
+                                              setState(() {
+                                                clearData();
+                                                getMyData();
+                                              });
+                                            },
+                                          );
+                                          // set up the AlertDialog
+                                          AlertDialog alert = AlertDialog(
+                                            content: Text("Are you sure you want to delete this item?"),
+                                            actions: [
+                                              cancelButton,
+                                              continueButton,
+                                            ],
+                                          );
+                                          // show the dialog
+                                          showDialog(
+                                            context: context,
+                                            builder: (BuildContext context) {
+                                              return alert;
+                                            },
+                                          );
+                                        },
+                                      ),
+                                    ],
                                   ),
                                 ),
-                                leading: CircleAvatar(
-                                  radius: 30.0,
-                                  backgroundImage: NetworkImage(url[index]),
+                                Divider(
+                                  height: 15,
                                 ),
-                                trailing: IconButton(
-                                  icon: Icon(Icons.delete,
-                                  size: 25,
-                                  ),
-                                  onPressed: ()
-                                  {
-                                    Widget cancelButton = TextButton(
-                                      child: Text("No"),
-                                      onPressed:  () {
-                                        Navigator.of(context).pop();
-                                      },
-                                    );
-                                    Widget continueButton = TextButton(
-                                      child: Text("Yes"),
-                                      onPressed:  () {
-                                        _pets.doc(petIDs[index]).delete();
-                                        Navigator.of(context).pop();
-                                        setState(() {
-                                          clearData();
-                                          getMyData();
-                                        });
-                                      },
-                                    );
-                                    // set up the AlertDialog
-                                    AlertDialog alert = AlertDialog(
-                                      content: Text("Are you sure you want to delete this item?"),
-                                      actions: [
-                                        cancelButton,
-                                        continueButton,
-                                      ],
-                                    );
-                                    // show the dialog
-                                    showDialog(
-                                      context: context,
-                                      builder: (BuildContext context) {
-                                        return alert;
-                                      },
-                                    );
-                                  },
-                                ),
-                              ),
-                              Divider(
-                                height: 15,
-                              ),
-                            ],
-                          ),
-                        );
-                  },
-                ),
-              ],
+                              ],
+                            ),
+                          );
+                    },
+                  ),
+                ],
+              ),
             ),
           ),
         ),
