@@ -268,6 +268,7 @@ class _DescriptionScreenState extends State<DescriptionScreen> {
                         Flexible(
                           child: Text(
                             widget.address + ', ' + widget.city,
+                            maxLines: 1,
                             style: TextStyle(
                               //fontSize: 16,
                               color: Colors.black,

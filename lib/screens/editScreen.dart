@@ -168,27 +168,6 @@ class _EditScreenState extends State<EditScreen> {
                         },
                       ),
                     ),
-                    Padding(
-                      padding: EdgeInsets.symmetric(vertical: 10.0),
-                      child: TextFormField(
-                        initialValue: widget.city,
-                        onChanged: (value) {
-                          widget.city = value;
-                          print(widget.city);
-                        },
-                        decoration: InputDecoration(
-                            labelText: 'City',
-                            border: OutlineInputBorder(
-                                borderRadius: BorderRadius.circular(10.0))),
-                        // The validator receives the text that the user has entered.
-                        validator: (value) {
-                          if (value == null || value.isEmpty) {
-                            return 'Please enter some text';
-                          }
-                          return null;
-                        },
-                      ),
-                    ),
                     SexDropDown(sex: widget.sex),
                     Padding(
                       padding: EdgeInsets.symmetric(vertical: 10.0),
