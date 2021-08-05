@@ -229,8 +229,7 @@ class _DogScreenState extends State<DogScreen> {
             setState(() {
               //  print(_pets.doc().id);
               if (_selectedCityValue == null) {
-                if (doc['Type'] == 'Dog' &&
-                    doc['Email'].contains(_auth.currentUser.email)) {
+                if (doc['Email'].contains(_auth.currentUser.email)) {
                   petNames.add(doc['Pet Name']);
                   sex.add(doc['Sex']);
                   petIDs.add(doc.id);
@@ -247,8 +246,7 @@ class _DogScreenState extends State<DogScreen> {
                   owners.add(doc['Owner']);
                 }
               } else {
-                if (doc['Type'] == 'Dog' &&
-                    doc['City'].contains(_selectedCityValue)) {
+                if (doc['City'].contains(_selectedCityValue)) {
                   petNames.add(doc['Pet Name']);
                   sex.add(doc['Sex']);
                   petIDs.add(doc.id);
@@ -325,7 +323,7 @@ class _DogScreenState extends State<DogScreen> {
                           msg: "Please login to view",
                           toastLength: Toast.LENGTH_SHORT,
                           gravity: ToastGravity.BOTTOM,
-                          backgroundColor: Colors.red,
+                          backgroundColor: Colors.grey,
                           textColor: Colors.white,
                           fontSize: 16.0
                       );
@@ -355,10 +353,10 @@ class _DogScreenState extends State<DogScreen> {
                   }
                   else {
                     Fluttertoast.showToast(
-                        msg: "Please login",
+                        msg: "Please login to view",
                         toastLength: Toast.LENGTH_SHORT,
                         gravity: ToastGravity.BOTTOM,
-                        backgroundColor: Colors.red,
+                        backgroundColor: Colors.grey,
                         textColor: Colors.white,
                         fontSize: 16.0
                     );
@@ -375,7 +373,6 @@ class _DogScreenState extends State<DogScreen> {
                   'Saved Posts',
                   style: TextStyle(fontSize: 17.0),
                 ),
-                value: favoritesVisible,
                 onChanged: (value) {
                   if(_auth.currentUser != null) {
                     favoritesVisible = value;
@@ -395,15 +392,16 @@ class _DogScreenState extends State<DogScreen> {
                   }
                   else {
                     Fluttertoast.showToast(
-                        msg: "Please login",
+                        msg: "Please login to view",
                         toastLength: Toast.LENGTH_SHORT,
                         gravity: ToastGravity.BOTTOM,
-                        backgroundColor: Colors.red,
+                        backgroundColor: Colors.grey,
                         textColor: Colors.white,
                         fontSize: 16.0
                     );
                     }
                 },
+                value: favoritesVisible,
               ),
               Padding(
                 padding: const EdgeInsets.only(right: 15.0),
@@ -431,7 +429,7 @@ class _DogScreenState extends State<DogScreen> {
                           msg: "Please login to view",
                           toastLength: Toast.LENGTH_SHORT,
                           gravity: ToastGravity.BOTTOM,
-                          backgroundColor: Colors.red,
+                          backgroundColor: Colors.grey,
                           textColor: Colors.white,
                           fontSize: 16.0
                       );

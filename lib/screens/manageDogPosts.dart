@@ -93,8 +93,7 @@ class _ManageDogPostsState extends State<ManageDogPostsScreen> {
     querySnapshot.docs.forEach((doc) {
       setState(() {
         //  print(_pets.doc().id);
-          if (doc['Type'] == 'Dog' &&
-              doc['Email'].contains(_auth.currentUser.email)) {
+          if (doc['Email'].contains(_auth.currentUser.email)) {
             petNames.add(doc['Pet Name']);
             sex.add(doc['Sex']);
             petIDs.add(doc.id);

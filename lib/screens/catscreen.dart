@@ -8,7 +8,7 @@ import 'package:pet_adoption_app/components/indianCities.dart';
 import 'package:pet_adoption_app/screens/loginORregister.dart';
 import 'package:searchable_dropdown/searchable_dropdown.dart';
 import 'package:pet_adoption_app/screens/profileScreen.dart';
-import 'package:pet_adoption_app/screens/manageCatPosts.dart';
+import 'package:pet_adoption_app/screens/manageDogPosts.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 
 class CatScreen extends StatefulWidget {
@@ -119,6 +119,7 @@ class _CatScreenState extends State<CatScreen> {
     //  uid = _auth.currentUser.uid;
     _favorite = FirebaseFirestore.instance.collection('User Data');
     if (_auth.currentUser != null) {
+      isLoggedIn = true;
       getDocumentID();
     }
     getData();
@@ -231,8 +232,7 @@ class _CatScreenState extends State<CatScreen> {
             setState(() {
               //  print(_pets.doc().id);
               if (_selectedCityValue == null) {
-                if (doc['Type'] == 'Cat' &&
-                    doc['Email'].contains(_auth.currentUser.email)) {
+                if (doc['Email'].contains(_auth.currentUser.email)) {
                   petNames.add(doc['Pet Name']);
                   sex.add(doc['Sex']);
                   petIDs.add(doc.id);
@@ -249,8 +249,7 @@ class _CatScreenState extends State<CatScreen> {
                   owners.add(doc['Owner']);
                 }
               } else {
-                if (doc['Type'] == 'Cat' &&
-                    doc['City'].contains(_selectedCityValue)) {
+                if (doc['City'].contains(_selectedCityValue)) {
                   petNames.add(doc['Pet Name']);
                   sex.add(doc['Sex']);
                   petIDs.add(doc.id);
@@ -326,7 +325,7 @@ class _CatScreenState extends State<CatScreen> {
                           msg: "Please login to view",
                           toastLength: Toast.LENGTH_SHORT,
                           gravity: ToastGravity.BOTTOM,
-                          backgroundColor: Colors.red,
+                          backgroundColor: Colors.grey,
                           textColor: Colors.white,
                           fontSize: 16.0
                       );
@@ -356,10 +355,10 @@ class _CatScreenState extends State<CatScreen> {
                   }
                   else {
                     Fluttertoast.showToast(
-                        msg: "Please login",
+                        msg: "Please login to view",
                         toastLength: Toast.LENGTH_SHORT,
                         gravity: ToastGravity.BOTTOM,
-                        backgroundColor: Colors.red,
+                        backgroundColor: Colors.grey,
                         textColor: Colors.white,
                         fontSize: 16.0
                     );
@@ -376,9 +375,7 @@ class _CatScreenState extends State<CatScreen> {
                   'Saved Posts',
                   style: TextStyle(fontSize: 17.0),
                 ),
-                value: favoritesVisible,
                 onChanged: (value) {
-                  favoritesVisible = value;
                   if(_auth.currentUser != null) {
                     favoritesVisible = value;
                     if (value == true) {
@@ -397,15 +394,16 @@ class _CatScreenState extends State<CatScreen> {
                   }
                   else {
                     Fluttertoast.showToast(
-                        msg: "Please login",
+                        msg: "Please login to view",
                         toastLength: Toast.LENGTH_SHORT,
                         gravity: ToastGravity.BOTTOM,
-                        backgroundColor: Colors.red,
+                        backgroundColor: Colors.grey,
                         textColor: Colors.white,
                         fontSize: 16.0
                     );
                   }
                 },
+                value: favoritesVisible,
               ),
               Padding(
                 padding: const EdgeInsets.only(right: 15.0),
@@ -423,7 +421,7 @@ class _CatScreenState extends State<CatScreen> {
                       Navigator.push(
                           context,
                           MaterialPageRoute(
-                              builder: (context) => ManageCatPostsScreen()));
+                              builder: (context) => ManageDogPostsScreen()));
                     } else {
                       // Navigator.push(
                       //     context,
@@ -433,7 +431,7 @@ class _CatScreenState extends State<CatScreen> {
                           msg: "Please login to view",
                           toastLength: Toast.LENGTH_SHORT,
                           gravity: ToastGravity.BOTTOM,
-                          backgroundColor: Colors.red,
+                          backgroundColor: Colors.grey,
                           textColor: Colors.white,
                           fontSize: 16.0
                       );
