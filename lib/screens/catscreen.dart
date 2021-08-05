@@ -5,6 +5,7 @@ import 'package:pet_adoption_app/screens/chatScreen.dart';
 import 'package:pet_adoption_app/screens/descriptionScreen.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:pet_adoption_app/components/indianCities.dart';
+import 'package:pet_adoption_app/screens/loginORregister.dart';
 import 'package:searchable_dropdown/searchable_dropdown.dart';
 import 'package:pet_adoption_app/screens/profileScreen.dart';
 import 'package:pet_adoption_app/screens/manageCatPosts.dart';
@@ -44,6 +45,7 @@ class _CatScreenState extends State<CatScreen> {
   bool favoritesVisible = false;
   String userID;
   String username;
+  bool isLoggedIn = false;
   // var uid;
 
   void cityCallback(newCityValue) {
@@ -63,7 +65,6 @@ class _CatScreenState extends State<CatScreen> {
       city.clear();
       timestamps.clear();
       owners.clear();
-
       getData();
     });
   }
@@ -281,16 +282,20 @@ class _CatScreenState extends State<CatScreen> {
             children: [
               ListTile(
                 title: Text(
-                  'LOGOUT',
+                  isLoggedIn ? 'LOGOUT' : 'LOGIN',
                   style: TextStyle(fontSize: 17.0),
                 ),
                 onTap: () {
                   if (_auth.currentUser != null) {
                     _auth.signOut();
                     setState(() {
+                      isLoggedIn = false;
                       username = null;
                     });
                     Navigator.pop(context);
+                  }
+                  else{
+                    Navigator.push(context, MaterialPageRoute(builder: (context)=> LoginOrRegister()));
                   }
                 },
               ),
