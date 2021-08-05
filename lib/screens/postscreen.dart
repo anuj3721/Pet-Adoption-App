@@ -99,6 +99,12 @@ class _PostScreenState extends State<PostScreen> {
                     Padding(
                       padding: EdgeInsets.symmetric(vertical: 10.0),
                       child: TextFormField(
+                        onTap: () {
+                          FocusScopeNode currentFocus = FocusScope.of(context);
+                          if (!currentFocus.hasPrimaryFocus) {
+                            currentFocus.unfocus();
+                          }
+                        },
                         onChanged: (value) {
                           _petName = value;
                           print(_petName);
@@ -175,6 +181,12 @@ class _PostScreenState extends State<PostScreen> {
                       child: TextFormField(
                         keyboardType: TextInputType.multiline,
                         maxLines: null,
+                        onTap: () {
+                          FocusScopeNode currentFocus = FocusScope.of(context);
+                          if (!currentFocus.hasPrimaryFocus) {
+                            currentFocus.unfocus();
+                          }
+                        },
                         onChanged: (value) {
                           _description = value;
                           print(_description);
@@ -213,6 +225,12 @@ class _PostScreenState extends State<PostScreen> {
                       child: TextFormField(
                         keyboardType: TextInputType.multiline,
                         maxLines: null,
+                        onTap: () {
+                          FocusScopeNode currentFocus = FocusScope.of(context);
+                          if (!currentFocus.hasPrimaryFocus) {
+                            currentFocus.unfocus();
+                          }
+                        },
                         onChanged: (value) {
                           _address = value;
                           print(_address);
@@ -233,6 +251,12 @@ class _PostScreenState extends State<PostScreen> {
                     Padding(
                       padding: EdgeInsets.symmetric(vertical: 10.0),
                       child: TextFormField(
+                        onTap: () {
+                          FocusScopeNode currentFocus = FocusScope.of(context);
+                          if (!currentFocus.hasPrimaryFocus) {
+                            currentFocus.unfocus();
+                          }
+                        },
                         onChanged: (value) {
                           _phoneNumber = value;
                           print(_phoneNumber);

@@ -5,10 +5,10 @@ import 'package:pet_adoption_app/screens/chatScreen.dart';
 import 'package:pet_adoption_app/screens/descriptionScreen.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:pet_adoption_app/components/indianCities.dart';
-import 'package:pet_adoption_app/screens/loginORregister.dart';
 import 'package:searchable_dropdown/searchable_dropdown.dart';
 import 'package:pet_adoption_app/screens/profileScreen.dart';
 import 'package:pet_adoption_app/screens/manageCatPosts.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 
 class CatScreen extends StatefulWidget {
   @override
@@ -313,30 +313,51 @@ class _CatScreenState extends State<CatScreen> {
                           MaterialPageRoute(
                               builder: (context) => ChatScreen()));
                     } else {
-                      Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                              builder: (context) => LoginOrRegister()));
+                      // Navigator.push(
+                      //     context,
+                      //     MaterialPageRoute(
+                      //         builder: (context) => LoginOrRegister()));
+                      Fluttertoast.showToast(
+                          msg: "Please login to view",
+                          toastLength: Toast.LENGTH_SHORT,
+                          gravity: ToastGravity.BOTTOM,
+                          backgroundColor: Colors.red,
+                          textColor: Colors.white,
+                          fontSize: 16.0
+                      );
                     }
                   },
                 ),
               ),
               SwitchListTile(
                 onChanged: (value) {
-                  myPostsVisible = value;
-                  if (value == false) {
-                    //all posts
-                    setState(() {
-                      clearData();
-                      getData();
-                      Navigator.pop(context);
-                    });
-                  } else {
-                    //my posts
-                    setState(() {
-                      myPostsCallback();
-                      Navigator.pop(context);
-                    });
+                  if( _auth.currentUser != null) {
+                    myPostsVisible = value;
+                    if (value == false) {
+                      //all posts
+                      setState(() {
+                        clearData();
+                        getData();
+                        //  getUsernames();
+                        Navigator.pop(context);
+                      });
+                    } else {
+                      //my posts
+                      setState(() {
+                        myPostsCallback();
+                        Navigator.pop(context);
+                      });
+                    }
+                  }
+                  else {
+                    Fluttertoast.showToast(
+                        msg: "Please login",
+                        toastLength: Toast.LENGTH_SHORT,
+                        gravity: ToastGravity.BOTTOM,
+                        backgroundColor: Colors.red,
+                        textColor: Colors.white,
+                        fontSize: 16.0
+                    );
                   }
                 },
                 value: myPostsVisible,
@@ -345,31 +366,6 @@ class _CatScreenState extends State<CatScreen> {
                   style: TextStyle(fontSize: 17.0),
                 ),
               ),
-              // ListTile(
-              //   title: Text(
-              //     'Home Screen',
-              //     style: TextStyle(fontSize: 17),
-              //   ),
-              //   onTap: () {
-              //     setState(() {
-              //       clearData();
-              //       getData();
-              //       Navigator.pop(context);
-              //     });
-              //   },
-              // ),
-              // ListTile(
-              //   title: Text(
-              //     'My Posts',
-              //     style: TextStyle(fontSize: 17),
-              //   ),
-              //   onTap: () {
-              //     setState(() {
-              //       myPostsCallback();
-              //       Navigator.pop(context);
-              //     });
-              //   },
-              // ),
               SwitchListTile(
                 title: Text(
                   'Saved Posts',
@@ -378,17 +374,31 @@ class _CatScreenState extends State<CatScreen> {
                 value: favoritesVisible,
                 onChanged: (value) {
                   favoritesVisible = value;
-                  if (value == true) {
-                    setState(() {
-                      clearData();
-                      savedPostsClicked();
-                    });
-                  } else {
-                    setState(() {
-                      clearData();
-                      getData();
-                      Navigator.pop(context);
-                    });
+                  if(_auth.currentUser != null) {
+                    favoritesVisible = value;
+                    if (value == true) {
+                      setState(() {
+                        clearData();
+                        savedPostsClicked();
+                      });
+                    } else {
+                      setState(() {
+                        clearData();
+                        getData();
+                        //    getUsernames();
+                        Navigator.pop(context);
+                      });
+                    }
+                  }
+                  else {
+                    Fluttertoast.showToast(
+                        msg: "Please login",
+                        toastLength: Toast.LENGTH_SHORT,
+                        gravity: ToastGravity.BOTTOM,
+                        backgroundColor: Colors.red,
+                        textColor: Colors.white,
+                        fontSize: 16.0
+                    );
                   }
                 },
               ),
@@ -410,10 +420,18 @@ class _CatScreenState extends State<CatScreen> {
                           MaterialPageRoute(
                               builder: (context) => ManageCatPostsScreen()));
                     } else {
-                      Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                              builder: (context) => LoginOrRegister()));
+                      // Navigator.push(
+                      //     context,
+                      //     MaterialPageRoute(
+                      //         builder: (context) => LoginOrRegister()));
+                      Fluttertoast.showToast(
+                          msg: "Please login to view",
+                          toastLength: Toast.LENGTH_SHORT,
+                          gravity: ToastGravity.BOTTOM,
+                          backgroundColor: Colors.red,
+                          textColor: Colors.white,
+                          fontSize: 16.0
+                      );
                     }
                   },
                 ),
