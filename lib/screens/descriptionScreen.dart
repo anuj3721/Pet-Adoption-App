@@ -351,7 +351,7 @@ class _DescriptionScreenState extends State<DescriptionScreen> {
                         child: Row(
                           children: [
                             Text(
-                              ' Contact',
+                              '   Contact',
                               style:
                                   TextStyle(fontSize: 25, color: Colors.white),
                             ),
