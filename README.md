@@ -9,7 +9,6 @@ community chat support where all the registered users can interact or ask genera
 <table>
   <tr>
     <td><img src="https://user-images.githubusercontent.com/20441828/151650481-7f2b4e9f-3213-4f71-ab77-d1ce46c11841.jpg" width=200 height=400></td>
-    <td><img src="https://user-images.githubusercontent.com/20441828/151650548-d5ee6f42-f0a2-496a-aa3e-15041e8cb443.jpg" width=200 height=400></td>
     <td><img src="https://user-images.githubusercontent.com/20441828/151650569-b2dcbe46-096c-4744-a4a2-5f2a99bd4419.jpg" width=200 height=400></td>
     <td><img src="https://user-images.githubusercontent.com/20441828/151650572-004ba8ed-b1f1-4e70-aa46-930824a72e23.jpg" width=200 height=400></td>
   </tr>
